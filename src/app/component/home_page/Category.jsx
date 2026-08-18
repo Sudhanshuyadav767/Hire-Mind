@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   Code2,
   PenTool,
@@ -51,32 +52,33 @@ const categories = [
 
 export default function TopCategories() {
   return (
-    <section className="max-w-7xl mx-auto px-6 py-14">
+    <section className="home-section home-categories max-w-7xl mx-auto px-6 py-14 select-none">
 
       {/* Heading */}
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-4xl font-poppins font-medium text-[#1D1B20]">
+        <h2 className="text-3xl font-poppins font-medium text-[#1D1B20]">
           Top Categories
         </h2>
 
-        <button className="flex items-center gap-2 text-[#433FE3] font-semibold hover:gap-3 transition-all">
-          View All Categories
-          <ArrowRight size={18} />
-        </button>
+        <Link href="/categories">
+          <button className="flex items-center gap-2 text-[#2D24D0] font-semibold hover:gap-3 transition-all cursor-pointer">
+            <span>View All Categories</span>
+            <ArrowRight size={18} />
+          </button>
+        </Link>
       </div>
 
-      {/* Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+      {/* Cards Grid */}
+      <div className="home-swiper flex flex-row overflow-x-auto no-scrollbar snap-x snap-mandatory md:grid md:grid-cols-3 lg:grid-cols-6 gap-6">
 
         {categories.map((item, index) => {
           const Icon = item.icon;
 
-          return (
+          const CardContent = (
             <div
-              key={index}
-              className="bg-white border border-gray-200 rounded-2xl p-7 flex flex-col items-center justify-center shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer"
+              className="bg-white border border-gray-200 rounded-2xl p-7 flex flex-col items-center justify-center shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer h-full w-full"
             >
-              {/* Icon */}
+              {/* Icon Container */}
               <div
                 className={`w-16 h-16 rounded-2xl ${item.bg} flex items-center justify-center mb-5`}
               >
@@ -91,14 +93,24 @@ export default function TopCategories() {
               </div>
 
               {/* Title */}
-              <h3 className="text-xl  font-poppins font-medium text-[#1D1B20] text-center">
+              <h3 className="text-lg font-poppins font-medium text-[#1D1B20] text-center">
                 {item.title}
               </h3>
 
-              {/* Jobs */}
-              <p className="text-gray-500 mt-2 text-base">
+              {/* Jobs Count */}
+              <p className="text-gray-500 mt-2 text-xs font-semibold">
                 {item.jobs}
               </p>
+            </div>
+          );
+
+          return item.title === "More" ? (
+            <Link key={index} href="/categories" className="snap-start min-w-[180px] md:min-w-0 block h-full">
+              {CardContent}
+            </Link>
+          ) : (
+            <div key={index} className="snap-start min-w-[180px] md:min-w-0 h-full">
+              {CardContent}
             </div>
           );
         })}

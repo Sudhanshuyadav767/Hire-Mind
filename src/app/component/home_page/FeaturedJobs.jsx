@@ -52,7 +52,7 @@ const jobs = [
 
 export default function FeaturedJobs() {
   return (
-    <section className="max-w-7xl mx-auto px-6 py-14">
+    <section className="home-section home-featured max-w-7xl mx-auto px-6 py-14">
       {/* Heading */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-4xl font-poppins font-medium text-[#1D1B20]">Featured Jobs</h2>
@@ -62,11 +62,11 @@ export default function FeaturedJobs() {
         </button>
       </div>
       {/* Job Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="home-swiper flex flex-row overflow-x-auto no-scrollbar snap-x snap-mandatory md:grid md:grid-cols-4 gap-6">
         {jobs.map((job, index) => (
           <div
             key={index}
-            className="bg-white border border-[#E6E6E6] rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col"
+            className="bg-white border border-[#E6E6E6] rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col shrink-0 min-w-[220px] sm:min-w-[240px] md:min-w-0 snap-start"
           >
             {/* Top */}
             <div className="flex justify-between items-start">
@@ -79,11 +79,11 @@ export default function FeaturedJobs() {
                   height={44}
                   className="rounded-full object-contain border border-gray-100"
                 />
-                <div>
-                  <h3 className="text-lg font-poppins font-medium text-[#1D1B20] leading-tight">
+                <div className="text-left">
+                  <h3 className="text-sm font-poppins font-semibold text-[#1D1B20] leading-snug line-clamp-1">
                     {job.title}
                   </h3>
-                  <p className="text-sm text-gray-500 font-poppins font-medium">{job.company}</p>
+                  <p className="text-xs text-gray-500 font-poppins font-medium">{job.company}</p>
                 </div>
               </div>
               <Bookmark
@@ -109,7 +109,7 @@ export default function FeaturedJobs() {
             <div className="flex items-center justify-between mt-5 text-[12px] text-[#7A7A7A] pt-4 border-t border-gray-100 font-poppins font-medium">
               <div className="flex items-center gap-1.5">
                 <MapPin size={16} />
-                <span>{job.mode === "Remote" ? "Remote" : "On-Site/Hybrid"}</span>
+                <span>{job.mode === "Remote" ? "Remote" : "On-Site"}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <span>{job.salary}</span>

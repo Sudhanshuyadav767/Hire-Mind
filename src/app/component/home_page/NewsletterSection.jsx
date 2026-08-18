@@ -1,38 +1,34 @@
 "use client";
 import React, { useState } from 'react';
-import Image from 'next/image';
-
 
 const NewsletterSection = () => {
   const [email, setEmail] = useState('');
 
   const handleSubscribe = (e) => {
     e.preventDefault();
-    // Aap yahan apni subscription logic handle kar sakte hain
     console.log('Subscribed email:', email);
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-2 py-8">
+    <div className="home-section home-newsletter w-full max-w-7xl mx-auto px-2 py-8 select-none">
       {/* Main Container with light lavender background */}
-      <div className="bg-[#EEF0FC] border border-[#DCE1F8] rounded-2xl p-6 md:p-10 flex flex-col lg:flex-row items-center justify-between gap-6 md:gap-8">
+      <div className="bg-[#EEF0FC] border border-[#DCE1F8] rounded-2xl p-4 sm:p-6 md:p-10 flex flex-col lg:flex-row items-center justify-between gap-6 md:gap-8">
         
         {/* Left Side: Illustration and Content */}
-        <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-5 max-w-2xl">
-          {/* Illustration Container (Aap apni dynamic image yahan lga sakte hain) */}
-          <div className="w-24 h-24 shrink-0 flex items-center justify-center">
-            {/* Placeholder representation for the folder/download graphic */}
-            <div className="relative w-full h-full  rounded-lg  shadow-2xs flex items-center justify-center">
-             <img src="/avatars/email.png" alt="" />
+        <div className="flex flex-row items-center text-left gap-3.5 max-w-2xl w-full lg:w-auto">
+          {/* Illustration Container */}
+          <div className="w-12 h-12 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center">
+            <div className="relative w-full h-full rounded-lg shadow-2xs flex items-center justify-center">
+              <img src="/avatars/email.png" alt="Mail" className="object-contain w-full h-full" />
             </div>
           </div>
 
           {/* Text Content */}
-          <div className="flex flex-col gap-1.5 justify-center h-full pt-1">
-            <h2 className="text-xl md:text-2xl font-bold text-gray-950 tracking-tight">
+          <div className="flex flex-col gap-1 justify-center h-full pt-1">
+            <h2 className="text-sm sm:text-xl md:text-2xl font-semibold text-gray-950 tracking-tight">
               Don&apos;t Miss New Opportunities
             </h2>
-            <p className="text-xs md:text-sm text-gray-500 leading-relaxed max-w-md">
+            <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 leading-relaxed max-w-md">
               Subscribe to get the latest job updates, career tips, and exclusive offers.
             </p>
           </div>
@@ -63,17 +59,16 @@ const NewsletterSection = () => {
               placeholder="Enter your email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-white text-sm text-gray-900 border border-gray-300 rounded-xl pl-12 pr-4 py-3.5 focus:outline-hidden focus:ring-2 focus:ring-[#5B65F2] focus:border-transparent placeholder:text-gray-400 shadow-2xs"
+              className="w-full bg-white text-xs sm:text-sm text-gray-900 border border-gray-300 rounded-xl pl-12 pr-4 py-3 sm:py-3.5 focus:outline-hidden focus:ring-2 focus:ring-[#5B65F2] focus:border-transparent placeholder:text-gray-400 shadow-2xs"
             />
           </div>
 
           {/* Subscribe Button */}
           <button
             type="submit"
-            className="w-full sm:w-auto bg-[#5B65F2] hover:bg-[#4A54E1] text-white font-medium text-sm py-3.5 px-6 rounded-xl inline-flex items-center justify-center gap-2 transition-all shadow-sm active:scale-98 cursor-pointer"
+            className="w-full sm:w-auto bg-[#5B65F2] hover:bg-[#4A54E1] text-white font-medium text-xs sm:text-sm py-3 sm:py-3.5 px-6 rounded-xl inline-flex items-center justify-center gap-2 transition-all shadow-sm active:scale-98 cursor-pointer"
           >
-            Subscribe
-            {/* Paper Airplane Send Icon */}
+            <span>Subscribe</span>
             <svg 
               className="w-4 h-4" 
               fill="currentColor" 

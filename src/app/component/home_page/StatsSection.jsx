@@ -9,19 +9,19 @@ const StatsSection = () => {
   ];
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-6">
+    <div className="home-section home-stats w-full max-w-7xl mx-auto px-4 py-6">
       {/* Main Border Container */}
       <div className="border border-gray-200 rounded-2xl bg-white p-6 shadow-2xs">
         
         {/* Responsive Grid / Flex Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 items-center gap-6 lg:gap-0">
+        <div className="home-swiper flex flex-row overflow-x-auto no-scrollbar snap-x snap-mandatory lg:grid lg:grid-cols-5 items-center gap-6 lg:gap-0">
           
           {/* Stats Items */}
           {stats.map((stat, index) => (
-            <div key={stat.id} className="flex items-center w-full lg:h-16 relative">
+            <div key={stat.id} className="flex items-center lg:h-16 relative shrink-0 min-w-[200px] snap-start">
               <div className="flex items-center gap-4 px-4 w-full justify-start md:justify-center lg:justify-start">
                 
-                {/* Icon Container (Aap isme apna icon/image fit kar dena) */}
+                {/* Icon Container */}
                 <div className={`w-14 h-14 rounded-xl ${stat.iconBg} flex items-center justify-center shrink-0 border border-[#DFE7FA]`}>
                   <Image
                     src={stat.image}

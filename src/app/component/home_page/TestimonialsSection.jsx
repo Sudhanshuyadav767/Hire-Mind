@@ -28,7 +28,7 @@ const TestimonialsSection = () => {
   ];
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-1 bg-white">
+    <div className="home-section home-testimonials w-full max-w-7xl mx-auto px-4 py-1 bg-white">
       
       {/* Top Header Section */} 
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-2">
@@ -60,15 +60,14 @@ const TestimonialsSection = () => {
       </div>
 
       {/* Testimonials Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="home-swiper flex flex-row overflow-x-auto no-scrollbar snap-x snap-mandatory md:grid md:grid-cols-3 gap-6">
         {testimonials.map((item) => (
           <div 
             key={item.id} 
-            className="border border-gray-200 rounded-2xl p-6 bg-white shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow duration-300"
+            className="border border-gray-200 rounded-2xl p-6 bg-white shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow duration-300 shrink-0 min-w-[240px] md:min-w-0 snap-start"
           >
-            {/* Top Row: Avatar and Quote Content */}
+            {/* Quote content */}
             <div className="flex items-start gap-4">
-              {/* Avatar Holder (Aap next/image bhi use kar sakte hain) */}
               <div className="w-16 h-16 rounded-full bg-gray-100 flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-200">
                 <Image 
                   src={item.avatar} 
@@ -79,9 +78,7 @@ const TestimonialsSection = () => {
                 />
               </div>
 
-              {/* Quote Text */}
-              <div className="relative">
-                {/* Green Quote Mark */}
+              <div className="relative text-left">
                 <span className="text-emerald-500 font-serif text-3xl absolute -left-4 -top-3">“</span>
                 <p className="text-sm text-gray-500 leading-relaxed pl-1 pt-1 font-poppins font-medium">
                   {item.text}
@@ -89,9 +86,8 @@ const TestimonialsSection = () => {
               </div>
             </div>
 
-            {/* Bottom Row: Stars and User Meta */}
+            {/* Bottom Row */}
             <div className="mt-6 pt-4 border-t border-gray-50/50 flex flex-col gap-2">
-              {/* Star Ratings */}
               <div className="flex items-center gap-0.5 text-amber-400">
                 {[...Array(5)].map((_, i) => (
                   <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 20 20">
@@ -100,13 +96,11 @@ const TestimonialsSection = () => {
                 ))}
               </div>
 
-              {/* Identity */}
-              <div>
+              <div className="text-left">
                 <h4 className="text-base font-poppins font-medium text-gray-900">{item.name}</h4>
                 <p className="text-xs text-gray-400 font-poppins font-medium mt-0.5">{item.role}</p>
               </div>
             </div>
-
           </div>
         ))}
       </div>

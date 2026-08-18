@@ -1,7 +1,141 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-
+@theme inline {
+  --font-sans: var(--font-poppins-next);
+  --font-poppins: var(--font-poppins-next);
 }
 
+* { box-sizing: border-box; }
+html { overflow-x: clip; }
+body {
+  margin: 0;
+  min-width: 0;
+  overflow-x: clip;
+  background: #fff;
+  color: #0b0b0d;
+  font-family: var(--font-poppins-next), sans-serif;
+  font-size: clamp(0.75rem, 0.73vw, 0.9rem);
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+h1, h2, h3, h4, h5, h6, strong, b {
+  font-weight: 600;
+}
+
+h1 { font-size: clamp(1.15rem, 1.8vw, 1.7rem) !important; line-height: 1.2; }
+h2 { font-size: clamp(1rem, 1.55vw, 1.3rem) !important; line-height: 1.25; }
+h3 { font-size: clamp(0.9rem, 1.25vw, 1.1rem) !important; line-height: 1.25; }
+p, span, li, a, button, label, input, textarea, select { font-size: inherit; }
+
+img, svg { max-width: 100%; }
+a, button, label, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+
+/* Custom HR Job Loading Animation */
+.loader {
+  height: 4px;
+  width: 130px;
+  --c: no-repeat linear-gradient(#433be2 0 0); /* Purple theme color matching our design */
+  background: var(--c), var(--c), #e0e7ff;
+  background-size: 60% 100%;
+  animation: l16 2s infinite;
+}
+@keyframes l16 {
+  0%   {background-position:-150% 0,-150% 0}
+  66%  {background-position: 250% 0,-150% 0}
+  100% {background-position: 250% 0, 250% 0}
+}
+
+/* Marquee animation for company logos */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 25s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Hide scrollbars universally for horizontal sliders */
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Homepage: fluid desktop-to-mobile layout. Scrollers are deliberately local only. */
+.homepage { overflow: clip; }
+.homepage .home-section { width: min(100% - clamp(1.5rem, 5vw, 4rem), 80rem); margin-inline: auto; padding-block: clamp(1.5rem, 4vw, 3.75rem); }
+.homepage .home-section > div:first-child { min-width: 0; }
+.homepage h2 { font-size: clamp(1.05rem, 1.7vw, 1.6rem); line-height: 1.2; }
+.homepage h3 { font-size: clamp(.8rem, 1vw, 1rem); }
+.homepage p, .homepage button, .homepage a { font-size: clamp(.68rem, .78vw, .9rem); }
+.home-container { width: min(100% - clamp(1.5rem, 5vw, 4rem), 80rem); }
+.home-swiper { scrollbar-width: none; overscroll-behavior-inline: contain; }
+.home-swiper::-webkit-scrollbar { display: none; }
+.mobile-card-swipe { min-width: 0; }
+.home-hero { padding-block: clamp(.5rem, 2vw, 1.5rem) clamp(2.5rem, 7vw, 6rem); }
+.home-hero .home-container { padding: clamp(1.25rem, 4vw, 4rem); border-radius: clamp(1rem, 2vw, 1.5rem); }
+.home-hero .hero-highlights { gap: clamp(.75rem, 2vw, 1.5rem); }
+.home-hero .hero-highlights > div { flex: 0 0 clamp(12.5rem, 23vw, 17rem); scroll-snap-align: start; }
+.home-featured .home-swiper > div { flex-basis: clamp(14rem, 27vw, 20rem); }
+.home-categories .home-swiper > :is(div, a) { flex: 0 0 clamp(10.5rem, 17vw, 14rem); }
+.home-companies .home-swiper > div { flex: 0 0 clamp(7.5rem, 12vw, 10rem); }
+.home-stats .home-swiper > div { flex: 0 0 clamp(12rem, 22vw, 17rem); }
+.home-testimonials .home-swiper > div { flex: 0 0 clamp(15rem, 30vw, 24rem); }
+.home-blogs .home-swiper > div { flex: 0 0 clamp(15rem, 23vw, 19rem); }
+
+@media (max-width: 767px) {
+  header > div:first-child { height: clamp(3.5rem, 15vw, 4rem) !important; padding-inline: clamp(.75rem, 4vw, 1.25rem) !important; }
+  .homepage .home-section { width: min(100% - 1.5rem, 80rem); padding-block: clamp(1.25rem, 5vw, 2rem); }
+  .homepage .home-section > div:first-child { padding-inline: 0; }
+  .homepage .home-section > div:first-child > div:first-child { margin-bottom: clamp(1rem, 4vw, 1.5rem); }
+  .home-hero { padding-block: .25rem 2rem; }
+  .home-hero .home-container { width: min(100% - 1.5rem, 80rem); margin-block: .5rem; padding: clamp(1.25rem, 6vw, 1.75rem); }
+  .home-hero .grid { display: flex; flex-direction: column; gap: 1.25rem; }
+  .home-hero .grid > div { width: 100%; }
+  .home-hero .grid > div:first-child { order: 1; }
+  .home-hero .grid > div:last-child { order: 2; max-width: min(100%, 20rem); margin-inline: auto; }
+  .home-hero h1 { font-size: clamp(1.75rem, 8.5vw, 2.5rem) !important; }
+  .home-hero h1 br { display: none; }
+  .home-hero p { font-size: clamp(.78rem, 3.4vw, .95rem) !important; }
+  .home-hero .hero-highlights { margin-top: 1.25rem; margin-bottom: -3.25rem; padding: .875rem; border-radius: 1rem; }
+  .home-hero .hero-highlights > div { flex-basis: min(76vw, 16rem); gap: .75rem; }
+  .home-hero .hero-highlights p { font-size: .7rem !important; }
+  .home-swiper { display: flex !important; overflow-x: auto !important; overflow-y: visible; scroll-snap-type: x mandatory; gap: clamp(.75rem, 3vw, 1rem) !important; padding: .125rem .125rem .5rem !important; margin-inline: -.125rem; }
+  .home-swiper > * { scroll-snap-align: start; }
+  .home-featured .home-swiper > div { flex: 0 0 min(78vw, 18rem); padding: clamp(.875rem, 4vw, 1.25rem); }
+  .home-categories .home-swiper > :is(div, a) { flex-basis: min(44vw, 11rem); }
+  .home-categories .home-swiper > :is(div, a) > div { padding: 1rem; border-radius: 1rem; }
+  .home-categories .home-swiper > :is(div, a) > div > div { width: 3rem; height: 3rem; margin-bottom: .75rem; }
+  .home-categories .home-swiper > :is(div, a) > div > div svg { width: 1.4rem; }
+  .home-companies > div > div:first-child, .home-stats > div { padding: clamp(1rem, 4vw, 1.25rem); }
+  .home-companies .home-swiper > div { flex-basis: min(37vw, 8.5rem); height: 3.75rem; padding: .75rem; }
+  .home-stats .home-swiper > div { flex-basis: min(70vw, 16rem); }
+  .home-stats .home-swiper > div:last-child { display: none; }
+  .home-testimonials { padding-top: 1.5rem !important; }
+  .home-testimonials .home-swiper > div { flex-basis: min(82vw, 20rem); padding: 1rem; }
+  .home-testimonials .home-swiper > div > div:first-child > div:first-child { width: 3rem; height: 3rem; }
+  .home-blogs .home-swiper > div { flex-basis: min(78vw, 18rem); }
+  .home-blogs .home-swiper > div > div:first-child { height: clamp(8.5rem, 44vw, 11rem); }
+  .home-newsletter > div { padding: clamp(1rem, 5vw, 1.5rem) !important; border-radius: 1rem; gap: 1rem !important; }
+  .home-newsletter form { gap: .625rem !important; }
+  /* Repeated content stays on one touch-scrollable row; it does not become a long vertical list. */
+  .mobile-card-swipe { display: flex !important; grid-template-columns: none !important; overflow-x: auto; overflow-y: visible; gap: clamp(.75rem, 3vw, 1rem) !important; padding: .125rem .125rem .625rem; margin-inline: -.125rem; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-inline: contain; }
+  .mobile-card-swipe::-webkit-scrollbar { display: none; }
+  .mobile-card-swipe > * { flex: 0 0 min(78vw, 19rem); min-width: 0; scroll-snap-align: start; }
+  .mobile-card-swipe > .col-span-full { flex-basis: calc(100% - .25rem); }
+  .mobile-card-swipe article { min-height: 100%; }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .homepage .home-section { width: min(100% - 3rem, 80rem); }
+  .home-hero .grid > div:first-child { grid-column: span 7 / span 7; }
+  .home-hero .grid > div:last-child { grid-column: span 5 / span 5; }
+  .home-hero .hero-highlights { margin-top: clamp(2.5rem, 6vw, 4rem); }
+}
