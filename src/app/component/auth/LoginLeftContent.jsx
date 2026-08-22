@@ -38,7 +38,7 @@ Let’s continue your</h1>
         </h1>
 
         <p className="mt-4 max-w-[560px] text-[16px] font-medium leading-[1.52] tracking-[-0.01em] text-[#5d5f70] sm:text-[17px] lg:text-[17px]">
-          Login to access personalized job recommendations,  AI tools, and career resources tailored for you.
+          Login to access personalized job recommendations, AI tools, and career resources tailored for you.
           </p>
 
         <div className="mt-8 space-y-6 lg:mt-8">
