@@ -34,7 +34,7 @@ const Hero = () => {
             </p>
 
             {/* Multi-Input Search Bar Block */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-2xl gap-2.5 w-full max-w-full md:max-w-[850px] mt-4 sm:mt-8 z-20 p-2 sm:p-1.5 shadow-sm border border-slate-100/40 md:border-none">
+           <div className="flex flex-col md:flex-row items-center bg-white rounded-2xl gap-4 w-full max-w-[1100px] mt-8 z-20">
               
               {/* Job Title Input */}
               <div className="bg-white flex flex-1 items-center gap-2 px-3 h-[38px] sm:h-[49px] rounded-xl border border-gray-200 shadow-2xs md:shadow-none md:border-none">
@@ -141,7 +141,7 @@ const Hero = () => {
         </div>
 
         {/* BOTTOM SECTION: Floating Highlights Feature Card Grid */}
-        <div className="home-swiper hero-highlights relative -mb-16 mt-16 bg-white p-4 sm:p-6 rounded-3xl shadow-lg border border-gray-100 flex flex-row overflow-x-auto no-scrollbar snap-x snap-mandatory lg:grid lg:grid-cols-4 gap-6 items-center">
+        <div className="relative -mt-8 bg-white p-4 sm:p-6 rounded-3xl shadow-xl border border-gray-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-center">
           
           {/* Highlight Item 1 */}
           <div className="flex items-start gap-3.5 shrink-0 min-w-[200px] lg:min-w-0 snap-start">
@@ -181,15 +181,15 @@ const Hero = () => {
             <div className="w-10 h-10 bg-cyan-50 text-cyan-600 rounded-2xl flex items-center justify-center shrink-0">
               <Bot className="w-6 h-6" />
             </div>
-            <div className="text-left">
-              <h3 className="text-sm font-poppins font-bold text-gray-900">AI Career Chatbot</h3>
-              <p className="text-xs text-gray-500 mt-1 leading-normal font-semibold">Get personalized syllabus maps & guide suggestions</p>
+            <div className="font-poppins font-medium">
+              <h3 className="text-sm  text-gray-900">AI Career Chatbot</h3>
+              <p className="text-xs text-gray-500 mt-1 leading-normal">Get personalized career guidance instantly</p>
             </div>
           </div>
 
         </div>
 
-      </div>
+      
     </section>
   );
 };
