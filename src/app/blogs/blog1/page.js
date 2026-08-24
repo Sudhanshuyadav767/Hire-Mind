@@ -325,9 +325,11 @@ export default function Blog1(){
           Discover expert advice to boost your career growth
         </p>
 
-        <button className="mt-4 bg-[#1D4ED8] text-white px-5 py-2 rounded-lg">
-          Explore Blogs ➜
-        </button>
+        <Link href="/blogs">
+          <button className="mt-4 bg-[#1D4ED8] text-white px-5 py-2 rounded-lg">
+            Explore Blogs ➜
+          </button>
+        </Link>
 
       </div>
 
@@ -424,9 +426,11 @@ export default function Blog1(){
             Related Blogs
           </h2>
 
-          <button className="text-blue-600 text-sm font-medium whitespace-nowrap">
-            View All ➜
-          </button>
+          <Link href="/blogs">
+            <button className="text-blue-600 text-sm font-medium whitespace-nowrap">
+              View All ➜
+            </button>
+          </Link>
 
         </div>
 

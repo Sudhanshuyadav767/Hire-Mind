@@ -177,7 +177,7 @@ const BlogSection = () => {
 
                 {/* Read More Button */}
                 <Link 
-                  href={`/blogs/${blog.title.toLowerCase().replace(/\s+/g, '-')}`} 
+                  href="/blogs/blog1" 
                   className="inline-flex items-center text-[10px] font-semibold text-blue-600 hover:text-blue-700 gap-0.5 group"
                 >
                   <span>Read more</span>

@@ -83,7 +83,7 @@ export default function Blogs() {
                           {blog.role}
                         </p>
                       </div>
-                     <Link href="/blog1">
+                     <Link href="/blogs/blog1">
                       <button className="text-blue-600 font-medium text-sm hover:text-blue-800">
                         Read More⟶
                       </button>
