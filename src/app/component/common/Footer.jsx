@@ -84,29 +84,29 @@ const Footer = () => {
               <h4 className="text-[#1E2229] font-semibold text-sm mb-3 whitespace-nowrap">Follow Us</h4>
               <div className="flex items-center gap-2">
                 {/* Facebook */}
-                <Link href="https://facebook.com" target="_blank" className="w-7 h-7 bg-[#3B5998] text-white rounded-full flex items-center justify-center hover:opacity-90 transition">
-                  <FontAwesomeIcon icon={faFacebookF} className="text-[13px] text-[#FAF8FF] w-3" />
-                </Link>
-                
-                {/* Instagram */}
-                <Link href="https://instagram.com" target="_blank" className="w-7 h-7 bg-gradient-to-tr from-yellow-500 via-red-500 to-purple-500 text-white rounded-full flex items-center justify-center hover:opacity-90 transition">
-                  <FontAwesomeIcon icon={faInstagram} className="text-[14px] text-[#FAF8FF] w-3.5" />
-                </Link>
-                
-                {/* X (Twitter) */}
-                <Link href="https://x.com" target="_blank" className="w-7 h-7 bg-black text-white rounded-full flex items-center justify-center hover:opacity-90 transition">
-                  <FontAwesomeIcon icon={faXTwitter} className="text-[13px] text-[#FAF8FF] w-3" />
-                </Link>
-                
-                {/* LinkedIn */}
-                <Link href="https://linkedin.com" target="_blank" className="w-7 h-7 bg-[#0077B5] text-white rounded-full flex items-center justify-center hover:opacity-90 transition">
-                  <FontAwesomeIcon icon={faLinkedinIn} className="text-[13px] text-[#FAF8FF] w-3" />
-                </Link>
-                
-                {/* Telegram */}
-                <Link href="https://telegram.org" target="_blank" className="w-7 h-7 bg-[#0088cc] text-white rounded-full flex items-center justify-center hover:opacity-90 transition">
-                  <FontAwesomeIcon icon={faTelegram} className="text-[14px] text-[#FAF8FF] w-3.5" />
-                </Link>
+                 <Link href="https://facebook.com" target="_blank" className="w-7 h-7 bg-[#3B5998] text-white rounded-full flex items-center justify-center hover:opacity-90 transition">
+                                   <FontAwesomeIcon icon={faFacebookF} className="text-[13px] text-[#FAF8FF] w-3" />
+                                 </Link>
+                                 
+                                 {/* Instagram */}
+                                 <Link href="https://instagram.com" target="_blank" className="w-7 h-7 bg-gradient-to-tr from-yellow-500 via-red-500 to-purple-500 text-white rounded-full flex items-center justify-center hover:opacity-90 transition">
+                                   <FontAwesomeIcon icon={faInstagram} className="text-[14px] text-[#FAF8FF] w-3.5" />
+                                 </Link>
+                                 
+                                 {/* X (Twitter) */}
+                                 <Link href="https://x.com" target="_blank" className="w-7 h-7 bg-black text-white rounded-full flex items-center justify-center hover:opacity-90 transition">
+                                   <FontAwesomeIcon icon={faXTwitter} className="text-[13px] text-[#FAF8FF] w-3" />
+                                 </Link>
+                                 
+                                 {/* LinkedIn */}
+                                 <Link href="https://linkedin.com" target="_blank" className="w-7 h-7 bg-[#0077B5] text-white rounded-full flex items-center justify-center hover:opacity-90 transition">
+                                   <FontAwesomeIcon icon={faLinkedinIn} className="text-[13px] text-[#FAF8FF] w-3" />
+                                 </Link>
+                                 
+                                 {/* Telegram */}
+                                 <Link href="https://telegram.org" target="_blank" className="w-7 h-7 bg-[#0088cc] text-white rounded-full flex items-center justify-center hover:opacity-90 transition">
+                                   <FontAwesomeIcon icon={faTelegram} className="text-[14px] text-[#FAF8FF] w-3.5" />
+                                 </Link>
               </div>
             </div>
 

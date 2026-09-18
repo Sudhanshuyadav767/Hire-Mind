@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HireMind - OTP Verification</title>
+  <style>
+    body, table, td, a {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+    table, td {
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+    }
+    img {
+      -ms-interpolation-mode: bicubic;
+      border: 0;
+      height: auto;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+    }
+    body {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      background-color: #F8F9FF;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+  </style>
+</head>
+<body style="background-color: #F8F9FF; margin: 0; padding: 30px 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+
+  <!-- Outer Container Table -->
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 28px; overflow: hidden; box-shadow: 0 12px 32px rgba(45, 36, 208, 0.06); border: 1px solid #E2E8F0;">
+    
+    <!-- TOP DECORATIVE GRADIENT LINE -->
+    <tr>
+      <td style="height: 5px; background: linear-gradient(90deg, #2D24D0 0%, #4F46E5 100%);"></td>
+    </tr>
+
+    <!-- HEADER LOGO SECTION -->
+    <tr>
+      <td align="center" style="padding: 36px 30px 20px 30px; text-align: center; background-color: #ffffff;">
+        <table border="0" cellpadding="0" cellspacing="0" align="center">
+          <tr>
+            <td align="center" style="vertical-align: middle; padding-right: 12px;">
+              <!-- Backend Dynamic Logo Image URL -->
+              <img src="{{logoUrl}}" alt="HireMind Logo" width="42" height="45" style="width: 42px; height: auto; display: block; border: 0;" />
+            </td>
+            <td align="left" style="vertical-align: middle;">
+              <span style="font-size: 26px; font-weight: 500; color: #101014; letter-spacing: -0.5px;">
+                HireMind
+              </span><br>
+              <span style="font-size: 11px; font-weight: 600; color: #64748B; letter-spacing: 0.5px;">
+                AI-Powered Hiring Platform
+              </span>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- GREETING & INTRO -->
+    <tr>
+      <td style="padding: 10px 40px 24px 40px; text-align: left;">
+        <h2 style="margin: 0 0 12px 0; font-size: 22px; font-weight: 700; color: #101014; line-height: 28px;">
+          Hi <span style="color: #2D24D0;">{{userName}}</span>,
+        </h2>
+        <p style="margin: 0; font-size: 14px; font-weight: 500; color: #475569; line-height: 22px;">
+          Thanks for choosing HireMind. Use the OTP below to verify your email address.
+        </p>
+      </td>
+    </tr>
+
+    <!-- 6-DIGIT OTP BOX CONTAINER -->
+    <tr>
+      <td style="padding: 0 40px 28px 40px;">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #F8F7FF; border-radius: 20px; padding: 24px 16px; border: 1px solid #EEF2FF;">
+          <tr>
+            <td align="center">
+              
+              <!-- 6 Digit Individual Boxes Row -->
+              <table border="0" cellpadding="0" cellspacing="0" align="center" style="margin-bottom: 20px;">
+                <tr>
+                  <td align="center" width="48" style="padding: 0 3px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="44" style="background-color: #ffffff; border: 1.5px solid #E2E8F0; border-radius: 12px; height: 52px;">
+                      <tr>
+                        <td align="center" valign="middle" style="font-size: 28px; font-weight: 800; color: #2D24D0; font-family: -apple-system, BlinkMacSystemFont, monospace; text-align: center;">
+                          {{d1}}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td align="center" width="48" style="padding: 0 3px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="44" style="background-color: #ffffff; border: 1.5px solid #E2E8F0; border-radius: 12px; height: 52px;">
+                      <tr>
+                        <td align="center" valign="middle" style="font-size: 28px; font-weight: 800; color: #2D24D0; font-family: -apple-system, BlinkMacSystemFont, monospace; text-align: center;">
+                          {{d2}}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td align="center" width="48" style="padding: 0 3px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="44" style="background-color: #ffffff; border: 1.5px solid #E2E8F0; border-radius: 12px; height: 52px;">
+                      <tr>
+                        <td align="center" valign="middle" style="font-size: 28px; font-weight: 800; color: #2D24D0; font-family: -apple-system, BlinkMacSystemFont, monospace; text-align: center;">
+                          {{d3}}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td align="center" width="48" style="padding: 0 3px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="44" style="background-color: #ffffff; border: 1.5px solid #E2E8F0; border-radius: 12px; height: 52px;">
+                      <tr>
+                        <td align="center" valign="middle" style="font-size: 28px; font-weight: 800; color: #2D24D0; font-family: -apple-system, BlinkMacSystemFont, monospace; text-align: center;">
+                          {{d4}}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td align="center" width="48" style="padding: 0 3px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="44" style="background-color: #ffffff; border: 1.5px solid #E2E8F0; border-radius: 12px; height: 52px;">
+                      <tr>
+                        <td align="center" valign="middle" style="font-size: 28px; font-weight: 800; color: #2D24D0; font-family: -apple-system, BlinkMacSystemFont, monospace; text-align: center;">
+                          {{d5}}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td align="center" width="48" style="padding: 0 3px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="44" style="background-color: #ffffff; border: 1.5px solid #E2E8F0; border-radius: 12px; height: 52px;">
+                      <tr>
+                        <td align="center" valign="middle" style="font-size: 28px; font-weight: 800; color: #2D24D0; font-family: -apple-system, BlinkMacSystemFont, monospace; text-align: center;">
+                          {{d6}}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Copy Code Badge -->
+              <div style="margin-bottom: 14px;">
+                <span style="font-size: 13px; font-weight: 700; color: #2D24D0; background-color: #FFFFFF; padding: 7px 16px; border-radius: 10px; border: 1px solid #E0E7FF; display: inline-block;">
+                  📋 Copy Code: <strong style="font-family: monospace; font-size: 15px; letter-spacing: 2px;">{{otpRawCode}}</strong>
+                </span>
+              </div>
+
+              <!-- Expiry & Security Notes -->
+              <table border="0" cellpadding="0" cellspacing="0" align="center">
+                <tr>
+                  <td style="font-size: 12px; font-weight: 500; color: #475569;">
+                    ⏱️ Expires in <strong style="color: #2D24D0;">{{expiryMinutes}} minutes</strong>
+                  </td>
+                  <td style="font-size: 12px; color: #CBD5E1; padding: 0 8px;">|</td>
+                  <td style="font-size: 12px; font-weight: 500; color: #475569;">
+                    🛡️ Do not share this code
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- SECURITY NOTICE BOX -->
+    <tr>
+      <td style="padding: 0 40px 32px 40px;">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #FFFBEB; border: 1px solid #FDE68A; border-radius: 16px; padding: 16px 20px;">
+          <tr>
+            <td width="36" style="vertical-align: middle; padding-right: 12px;" align="center">
+              <div style="width: 32px; height: 32px; background-color: #F59E0B; border-radius: 50%; text-align: center; line-height: 32px; font-size: 16px;">
+                🔒
+              </div>
+            </td>
+            <td style="vertical-align: middle; font-size: 13px; color: #92400E; line-height: 19px; text-align: left;">
+              <strong>HireMind will never</strong> ask for this code over phone or chat. If you did not request this, please ignore this email.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- SUB-FOOTER REPEAT NOTICE -->
+    <tr>
+      <td align="center" style="padding: 0 40px 24px 40px; text-align: center; border-top: 1px solid #F1F5F9; padding-top: 24px;">
+        <p style="margin: 0 0 4px 0; font-size: 12px; font-weight: 500; color: #64748B;">
+          © {{year}} HireMind &nbsp;•&nbsp; All rights reserved
+        </p>
+        <p style="margin: 0; font-size: 11px; font-weight: 500; color: #94A3B8;">
+          This is an automated message — please do not reply.
+        </p>
+      </td>
+    </tr>
+
+    <!-- WHY HIREMIND FEATURE SHOWCASE BOX -->
+    <tr>
+      <td style="padding: 0 24px 28px 24px;">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 20px; padding: 24px 16px;">
+          
+          <!-- Section Title -->
+          <tr>
+            <td align="center" style="padding-bottom: 20px;">
+              <h3 style="margin: 0 0 6px 0; font-size: 16px; font-weight: 700; color: #101014;">
+                Why HireMind?
+              </h3>
+              <div style="width: 28px; height: 3px; background-color: #2D24D0; border-radius: 2px; margin: 0 auto;"></div>
+            </td>
+          </tr>
+
+          <!-- 4 Features Grid Row -->
+          <tr>
+            <td>
+              <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  
+                  <!-- Feature 1 -->
+                  <td width="25%" align="center" style="vertical-align: top; padding: 0 6px;">
+                    <div style="width: 38px; height: 38px; background-color: #F5F3FF; border-radius: 12px; text-align: center; line-height: 38px; font-size: 18px; margin-bottom: 8px;">
+                      ⭐
+                    </div>
+                    <div style="font-size: 11px; font-weight: 700; color: #101014; margin-bottom: 4px; line-height: 14px;">
+                      AI-Powered Matching
+                    </div>
+                    <div style="font-size: 10px; font-weight: 400; color: #64748B; line-height: 13px;">
+                      Smart matching for right candidates.
+                    </div>
+                  </td>
+
+                  <!-- Feature 2 -->
+                  <td width="25%" align="center" style="vertical-align: top; padding: 0 6px;">
+                    <div style="width: 38px; height: 38px; background-color: #F5F3FF; border-radius: 12px; text-align: center; line-height: 38px; font-size: 18px; margin-bottom: 8px;">
+                      ⚡
+                    </div>
+                    <div style="font-size: 11px; font-weight: 700; color: #101014; margin-bottom: 4px; line-height: 14px;">
+                      Faster Hiring
+                    </div>
+                    <div style="font-size: 10px; font-weight: 400; color: #64748B; line-height: 13px;">
+                      Reduce time-to-hire significantly.
+                    </div>
+                  </td>
+
+                  <!-- Feature 3 -->
+                  <td width="25%" align="center" style="vertical-align: top; padding: 0 6px;">
+                    <div style="width: 38px; height: 38px; background-color: #F5F3FF; border-radius: 12px; text-align: center; line-height: 38px; font-size: 18px; margin-bottom: 8px;">
+                      🛡️
+                    </div>
+                    <div style="font-size: 11px; font-weight: 700; color: #101014; margin-bottom: 4px; line-height: 14px;">
+                      Secure & Reliable
+                    </div>
+                    <div style="font-size: 10px; font-weight: 400; color: #64748B; line-height: 13px;">
+                      Your data is safe with us.
+                    </div>
+                  </td>
+
+                  <!-- Feature 4 -->
+                  <td width="25%" align="center" style="vertical-align: top; padding: 0 6px;">
+                    <div style="width: 38px; height: 38px; background-color: #F5F3FF; border-radius: 12px; text-align: center; line-height: 38px; font-size: 18px; margin-bottom: 8px;">
+                      📊
+                    </div>
+                    <div style="font-size: 11px; font-weight: 700; color: #101014; margin-bottom: 4px; line-height: 14px;">
+                      Better Insights
+                    </div>
+                    <div style="font-size: 10px; font-weight: 400; color: #64748B; line-height: 13px;">
+                      Data-driven insights for decisions.
+                    </div>
+                  </td>
+
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Inner Sub-footer inside Why HireMind Card -->
+          <tr>
+            <td style="padding-top: 20px; border-top: 1px solid #F1F5F9; margin-top: 16px;">
+              <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td align="left" style="vertical-align: middle;">
+                    <table border="0" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="vertical-align: middle; padding-right: 8px;">
+                          <img src="{{logoUrl}}" alt="HireMind" width="24" height="26" style="width: 24px; height: auto; display: block;" />
+                        </td>
+                        <td style="vertical-align: middle;">
+                          <div style="font-size: 13px; font-weight: 800; color: #101014;">HireMind</div>
+                          <div style="font-size: 9px; font-weight: 500; color: #64748B;">Building the future of hiring with AI</div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td align="right" style="vertical-align: middle;">
+                    <span style="font-size: 10px; font-weight: 600; color: #64748B;">Follow us on &nbsp;</span>
+                    <a href="{{appUrl}}" style="text-decoration: none; font-size: 14px;">🔗</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+
+  </table>
+
+</body>
+</html>
