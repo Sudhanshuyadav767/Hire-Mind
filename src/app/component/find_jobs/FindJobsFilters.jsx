@@ -1,7 +1,6 @@
-"use client";
-
 import { useState } from "react";
-import { Sliders, ChevronDown, CheckSquare, Square, Search } from "lucide-react";
+import Link from "next/link";
+import { Sliders, ChevronDown, CheckSquare, Square, Search, Briefcase } from "lucide-react";
 
 export default function FindJobsFilters({
   activeJobTypes,
@@ -206,9 +205,21 @@ export default function FindJobsFilters({
               );
             })}
           </div>
-          <button type="button" className="text-[10px] font-semibold text-[#433be2] hover:text-[#3129c8] mt-1 flex items-center cursor-pointer">
-            + Show More
-          </button>
+        </div>
+
+        {/* 5. Quick My Applications Sidebar Widget */}
+        <div className="bg-[#f0f2ff] border border-[#d3d7fc] rounded-2xl p-4 space-y-2 text-center pt-3">
+          <h4 className="text-xs font-bold text-[#11121d]">Applied to Jobs?</h4>
+          <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
+            Track real-time status & stage timelines of all your applications.
+          </p>
+          <Link
+            href="/applications"
+            className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-[#433be2] hover:bg-[#322ac4] text-white rounded-xl text-xs font-bold transition shadow-2xs cursor-pointer"
+          >
+            <Briefcase size={14} />
+            <span>My Job Applications</span>
+          </Link>
         </div>
 
       </div>
