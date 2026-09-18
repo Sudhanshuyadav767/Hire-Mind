@@ -416,7 +416,7 @@ export const review1=[
   export const jobmatching=[
     {
       id:"1",
-      image:"/logo/google.jpg",
+      image:"/logo/Google.png",
       jobtype:"Software Engineer",
       companyname:"Google",
       location:"Banglore,Karnataka",
@@ -432,7 +432,7 @@ export const review1=[
     },
      {
       id:"1",
-      image:"/logo/google.jpg",
+      image:"/logo/Google.png",
       jobtype:"Software Engineer",
       companyname:"Google",
       location:"Banglore,Karnataka",
@@ -448,7 +448,7 @@ export const review1=[
     },
      {
       id:"1",
-      image:"/logo/google.jpg",
+      image:"/logo/Google.png",
       jobtype:"Software Engineer",
       companyname:"Google",
       location:"Banglore,Karnataka",
@@ -470,4 +470,222 @@ export  const skills = [
   { name: "SQL", percent: "90%" },
    { name: "Problem Solving", percent: "90%" },
    { name: "Machine Learning", percent: "90%" },];
+
+   export const question=[
+    {
+      interest:"Technology,Problem Solving",
+      educationlevel:"Bachelor's Degree",
+      currentexperience:"Computer Science",
+      experienceyear:"2-5 year"
+    }
+   ]
+export const careerPaths=[
+  
+    {post:"Software Developer",scope:"High Growth"},
+      {post:"Data Scientist",scope:"High Growth"},
+        {post:"Product Manager",scope:"High Growth"},
+          {post:"UI/UX Designer",scope:"High Growth"},
+            {post:"Cloud Engineer",scope:"High Growth"},
+  
+]
+export const recommendedstep=[
+ { step:"Fill skill gaps to improve match"},
+  {step:"Take recommended courses"},
+  {step:"Build project to showcase your skills"},
+  {step:"Get certificate to boost your profile"}
+]
+
+export const popularrole=[
+  {
+    role:"Web Developer"
+  },
+  { role:"App Developer"},
+  {role:"UI/UX Designer"},
+  {role:"Product Manager"}
+]
+
+export const RecentMock=[
+  {
+    id:1,
+    post:"Software Engineer",
+    interviewtype:"Technical Interview",
+    level:".Medium",
+    day:"5 May 2026",
+    time:"10:30",
+    reponse:"Good"
+  },
+    {
+    id:2,
+    post:"Software Engineer",
+    interviewtype:"Technical Interview",
+    level:".Medium",
+    day:"5 May 2026",
+    time:"10:30",
+    reponse:"Good"
+  },
+    {
+    id:3,
+    post:"Software Engineer",
+    interviewtype:"Technical Interview",
+    level:".Medium",
+    day:"5 May 2026",
+    time:"10:30",
+    reponse:"Good"
+  },
+    {
+    id:4,
+    post:"Software Engineer",
+    interviewtype:"Technical Interview",
+    level:".Medium",
+    day:"5 May 2026",
+    time:"10:30",
+    reponse:"Good"
+  },
+  
+]
+export const data4=[
+  {
+id:1,
+totalinterview:"4",
+score:"87%",
+duration:"30min",
+improvement:"+12%"
+  }
+]
+///destrop-36
+
+
+export const scoreData = [
+  {
+    title: "Technical Knowledge",
+    score: 85,
+    icon: "</>",
+    color: "#4f46e5",
+    bgColor: "#eef2ff"
+  },
+  {
+    title: "Problem Solving",
+    score: 86,
+    icon: "♙",
+    color: "#22c55e",
+    bgColor: "#ecfdf5"
+  },
+  {
+    title: "Communication",
+    score: 65,
+    icon: "💬",
+    color: "#4f46e5",
+    bgColor: "#eef2ff"
+  },
+  {
+    title: "Coding Quality",
+    score: 48,
+    icon: "</>",
+    color: "#f59e0b",
+    bgColor: "#fffbeb"
+  }
+];
+
+import {
+  LogOut,
+  BarChart,
+  Gauge,
+  Clock,
+  Calendar,Check
+} from "lucide-react";
+
+export const details=[
+  {
+    name:"Aman Singh",
+    post:"Software Engineer Candidate"
+  },
+  {
+    icon: LogOut,
+    title: "Interview Type",
+    score: "Technical Interview"
+  },
+  {
+    icon: BarChart,
+    title: "Experience Level",
+    score: "Mid Level(2-5 Years)",
+  },
+  {
+    icon: Gauge,
+    title: "Diffculty Level",
+    score: "Medium",
+  },
+  {
+    icon: Clock,
+    title: "Interview Duration",
+    score: "00:46:22"
+  },
+  {
+    icon: Calendar,
+    title: "Completed On",
+    score: "may25,2025-10:30AM"
+  }
+];
+
+
+
+export const performanceData = [
+  {
+    id: 1,
+    question: "Explain binary search and its complexity",
+    category: "Algorithms",
+    categoryType: "purple",
+    score: "86/100",
+    feedback: "Good",
+    feedbackType: "green",
+  },
+  {
+    id: 2,
+    question: "Implement a function to reverse a linked list.",
+    category: "Data structures",
+    categoryType: "green",
+    score: "86/100",
+    feedback: "Excellent",
+    feedbackType: "blue",
+  },
+  {
+    id: 3,
+    question: "Design a rate limiter system.",
+    category: "System Design",
+    categoryType: "orange",
+    score: "86/100",
+    feedback: "Good",
+    feedbackType: "green",
+  },
+  {
+    id: 4,
+    question: "Find the maximum subarray sum",
+    category: "Algorithms",
+    categoryType: "purple",
+    score: "86/100",
+    feedback: "Good",
+    feedbackType: "green",
+  },
+  {
+    id: 5,
+    question: "Explain database indexing.",
+    category: "Database",
+    categoryType: "purple",
+    score: "86/100",
+    feedback: "Average",
+    feedbackType: "yellow",
+  },
+];
+
+export const strength=[
+  {icon:Check,Strength:"Strong understanding of data structures and algorithum"},
+  {icon:Check,Strength:"Good problem-solving approach"},
+  {icon:Check,Strength:"Writing clean and efficient code"},
+  {icon:Check,Strength:"Clear and concise communication"}
+]
+
+export const improve=[
+  {Improve:"Edge case handling in some solutions"},
+  {Improve:"Could optimize time complexity better"},
+  {Improve:"More depth in System Design concept"}
+]
 

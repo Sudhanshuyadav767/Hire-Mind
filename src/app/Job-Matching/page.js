@@ -1,21 +1,22 @@
- import Header from "@/app/component/common/Header"
-   import Footer from "@/app/component/common/Footer"
+
 import Image from "next/image";
 import JobMatching from "../component/Job-Matching/JobMatching"
 import JobMatchingright from "../component/Job-Matching/JobMatchingright"
+
 export default function JobMatchings() {
   return (
     <>
-    <Header />
-    <section className=" px-6 py-6">
-      <div className="flex flex-col md:flex-row justify-between max-w-7xl mx-auto w-full gap-8 bg-[#F3F0FF] px-4 py-4">
+
+    <section className=" max-w-7xl mx-auto ">
+      <div className=" bg-[#F3F0FF]">
+      <div className="flex flex-col md:flex-row justify-between max-w-7xl mx-auto  gap-8 px-4 py-4 border border-slate-100 rounded-2xl">
         
         <div className="w-1/2">
-          <h1 className="text-5xl font-bold">
+          <h1 className="text-2xl font-bold">
             AI Job Matching
           </h1>
 
-          <p className="text-gray-600 text-xl mt-2">
+          <p className="text-gray-600 text-base mt-2">
             Find the most job opportunities that match your skills, 
             <br />
             experience, and career goals
@@ -33,7 +34,7 @@ export default function JobMatchings() {
 </div>
 
       </div>
-    
+      </div>
     <div className="flex flex-col lg:flex-row max-w-7xl mx-auto mt-4 gap-4 px-2 sm:px-4 items-stretch">
 
   {/* LEFT */}
@@ -47,9 +48,10 @@ export default function JobMatchings() {
   </div>
 
 </div>
-    <div className="px-4 py-4 border rounded-xl flex flex-col md:flex-row gap-8 items-center justify-between"
-      style={{backgroundColor:"#B8ADFF"}}>
-      <div className="flex">
+<div className=" max-w-7xl mx-auto">
+    <div className="px-4 py-4  rounded-xl bg-[#B8ADFF] flex flex-col md:flex-row gap-8 items-center justify-between mb-4"
+>
+      <div className="flex bg-[#B8ADFF] ">
 
         <Image
         src="/Images/bag.png"
@@ -66,8 +68,9 @@ export default function JobMatchings() {
         <button className="text-blue-600 px-4 py-4 shadow-sm rounded-xl cursor-pointer bg-white">Improve Profile➜</button>
          </div>
     </div>
+    </div>
     </section>
-    <Footer />
+    
     </>
   );
 }

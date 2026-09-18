@@ -15,7 +15,7 @@ export default function Jobtype2() {
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
-          <h2 className="text-xl sm:text-2xl font-bold">
+          <h2 className="text-base sm:text-lg font-bold">
             Your Profile Summary
           </h2>
 
@@ -151,7 +151,7 @@ export default function Jobtype2() {
       {/* ================= TOP MATCHED SKILLS ================= */}
       <div className="w-full min-w-0 border rounded-xl p-4 sm:p-6 shadow-sm bg-white">
 
-        <h2 className="text-2xl sm:text-3xl font-bold mb-6">
+        <h2 className="text-base sm:text-lg font-bold mb-6">
           Top Matched Skills
         </h2>
 
@@ -193,7 +193,7 @@ export default function Jobtype2() {
       {/* ================= NEED HELP ================= */}
       <div className="w-full min-w-0 rounded-xl bg-[#F3F0FF] p-4 sm:p-6 border shadow-sm">
 
-        <h2 className="text-2xl sm:text-4xl font-bold">
+        <h2 className="text-base sm:text-lg font-bold">
           Need Help?
         </h2>
 

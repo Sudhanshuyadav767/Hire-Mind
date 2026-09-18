@@ -62,14 +62,14 @@ export default function AIServicesPage(){
                 {
                     title:"AI Career Chatbot",
                     description:"Ask anything about jobs, career,skill and more, Get instant smart answer.",
-                      Link:"Career-Chatbot",
+                      Link:"ai-services/Career-Chatbot",
                     icon:Bot
                   
                 },
                 {
                     title:"Learning Recommendation",
                     description:"Discover personalized courses and resources to upsikll and grow faster in your career.",
-                     Link:"Learning-Recommendation",
+                     Link:"ai-services/Learning-Recommendation",
                     icon:GraduationCap
                    
                 }
@@ -94,7 +94,7 @@ export default function AIServicesPage(){
                 </div>
                 <div>
                     <Image
-                    src="/Images/Robot.jpeg"
+                    src="/Images/Robot.png"
                     alt=" "
                     height={600}
                     width={900}
