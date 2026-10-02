@@ -7,8 +7,8 @@ import {
   Lightbulb,CircleDollarSign, ChartNoAxesCombined,BriefcaseBusiness, MessageSquareText,ClipboardCheck,  GraduationCap,
 } from "lucide-react";
 
-import CareerOverview from "@/app/component/Career-guidance/DataScience/Left";
-import HiringSection from "@/app/component/Career-guidance/DataScience/Right";
+import Roadmap from "@/app/component/Career-guidance/DataScientist1/DataScientist";
+
 import Header from "@/app/component/common/Header"
 import Footer from "@/app/component/common/Footer"
 
@@ -23,8 +23,8 @@ const tabs = [
 
 export default function DataScientist() {
   return (
-    <>
-    <Header />
+   <>
+   <Header />
     <main className="min-h-screen bg-white">
       {/* ================= HERO ================= */}
       <section className="border-b border-[#e4e4f5] bg-[#f0f0ff]">
@@ -43,7 +43,7 @@ export default function DataScientist() {
             <div className="w-full lg:w-[65%]">
               <div className="mb-3 flex flex-wrap items-center gap-4">
                 <h1 className="text-xl font-bold tracking-tight text-gray-950 sm:text-2xl">
-                  Data Scientist
+                  Data Scientist Roadmap
                 </h1>
 
                 <span className="inline-flex items-center rounded-md border border-green-300 bg-green-100 px-4 py-2 text-sm font-semibold text-green-500 shadow-xs">
@@ -89,7 +89,7 @@ export default function DataScientist() {
             {/* RIGHT IMAGE */}
             <div className="flex w-full justify-center lg:w-[35%] lg:justify-end">
               <img
-                src="/Images/dataSc.png"
+                src="/Images/Roadmap.png"
                 alt="Data Scientist"
                 className="w-[380px] object-contain "
               />
@@ -142,18 +142,12 @@ export default function DataScientist() {
 
   </div>
 </div>
- <div className="flex flex-col lg:flex-row  mt-4 gap-4 px-2 sm:px-4 items-stretch mb-4">
-               
-            <div className="w-full lg:flex-1 min-w-0">
-                 <CareerOverview />
-            </div>
-            <div className="">
-                <HiringSection />
-            </div>
-        </div>
-   
+<div>
+    <Roadmap />
 
-  <div className="max-w-7xl mx-auto bg-[#f0efff] border border-[#e4e1ff] px-6 py-5 md:px-10 mb-4 rounded-2xl">
+</div>
+
+ <div className="max-w-7xl mx-auto bg-[#f0efff] border border-[#e4e1ff] px-6 py-5 md:px-10 mb-4 rounded-2xl">
       <div className="flex items-center gap-6 ">
 
         {/* Icon */}
@@ -173,20 +167,18 @@ export default function DataScientist() {
         {/* Text */}
         <div>
           <h2 className="text-base md:text-lg font-bold text-gray-800">
-            Ready to start your journey as Data Scientist?
+        Stay Consistent and keep building
           </h2>
 
           <p className="mt-2 text-sm md:text-base text-gray-500 font-medium">
-            Follow the recommended roadmap and build the skills you need.
+        Follow the roadmap step-by-step and achieve your dream career
           </p>
         </div>
 
       </div>
     </div>
-
-    </main>
-    <Footer />
-    </>
-  );
+</main>
+<Footer />
+</>
+)
 }
-

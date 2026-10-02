@@ -1,6 +1,6 @@
 import Image from "next/image"
 import LeftCareerGuidance from '../component/Career-guidance/LeftCareer-guidance'
-// import RightCareerGuidance from '../component/Career-guidance/RightCareer-guidance'
+import RightCareerGuidance from '../component/Career-guidance/RightCareer-guidance'
 import Header from "@/app/component/common/Header"
 import Footer from "@/app/component/common/Footer"
 export default function careerGuidance(){
@@ -30,7 +30,7 @@ export default function careerGuidance(){
                  <LeftCareerGuidance />
             </div>
             <div className="w-full lg:w-[400px] lg:shrink-0">
-                {/* <RightCareerGuidance /> */}
+                 <RightCareerGuidance />
             </div>
         </div>
        </div> 

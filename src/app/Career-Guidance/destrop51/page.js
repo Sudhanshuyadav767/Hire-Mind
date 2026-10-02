@@ -7,8 +7,9 @@ import {
   Lightbulb,CircleDollarSign, ChartNoAxesCombined,BriefcaseBusiness, MessageSquareText,ClipboardCheck,  GraduationCap,
 } from "lucide-react";
 
-import CareerOverview from "@/app/component/Career-guidance/DataScience/Left";
-import HiringSection from "@/app/component/Career-guidance/DataScience/Right";
+import JobFilters from "@/app/component/Career-guidance/Destrop51/Left";
+import JobList from "@/app/component/Career-guidance/Destrop51/Right";
+
 import Header from "@/app/component/common/Header"
 import Footer from "@/app/component/common/Footer"
 
@@ -23,8 +24,8 @@ const tabs = [
 
 export default function DataScientist() {
   return (
-    <>
-    <Header />
+   <>
+   <Header />
     <main className="min-h-screen bg-white">
       {/* ================= HERO ================= */}
       <section className="border-b border-[#e4e4f5] bg-[#f0f0ff]">
@@ -43,7 +44,7 @@ export default function DataScientist() {
             <div className="w-full lg:w-[65%]">
               <div className="mb-3 flex flex-wrap items-center gap-4">
                 <h1 className="text-xl font-bold tracking-tight text-gray-950 sm:text-2xl">
-                  Data Scientist
+                  Data Scientist Courses
                 </h1>
 
                 <span className="inline-flex items-center rounded-md border border-green-300 bg-green-100 px-4 py-2 text-sm font-semibold text-green-500 shadow-xs">
@@ -89,7 +90,7 @@ export default function DataScientist() {
             {/* RIGHT IMAGE */}
             <div className="flex w-full justify-center lg:w-[35%] lg:justify-end">
               <img
-                src="/Images/dataSc.png"
+                src="/Images/Bag2.png"
                 alt="Data Scientist"
                 className="w-[380px] object-contain "
               />
@@ -132,61 +133,35 @@ export default function DataScientist() {
     <div className="flex min-w-[120px] flex-1 cursor-pointer items-center justify-center gap-2 px-4 py-4 font-semibold text-gray-400 transition hover:text-[#6254e7]">
       <ClipboardCheck size={20} className="shrink-0" />
       <span className="whitespace-nowrap">Top Jobs</span>
+
+     
     </div>
 
     {/* Insights */}
-    <div className="flex min-w-[120px] flex-1 cursor-pointer items-center justify-center gap-2 px-4 py-4 font-semibold text-gray-400 transition hover:text-[#6254e7]">
+   <Link href="/Career-Guidance/Destrop52"> <div className="flex min-w-[120px] flex-1 cursor-pointer items-center justify-center gap-2 px-4 py-4 font-semibold text-gray-400 transition hover:text-[#6254e7]">
       <MessageSquareText size={20} className="shrink-0" />
       <span className="whitespace-nowrap">Insights</span>
-    </div>
+    </div> </Link>
 
   </div>
 </div>
- <div className="flex flex-col lg:flex-row  mt-4 gap-4 px-2 sm:px-4 items-stretch mb-4">
-               
-            <div className="w-full lg:flex-1 min-w-0">
-                 <CareerOverview />
-            </div>
-            <div className="">
-                <HiringSection />
-            </div>
-        </div>
-   
 
-  <div className="max-w-7xl mx-auto bg-[#f0efff] border border-[#e4e1ff] px-6 py-5 md:px-10 mb-4 rounded-2xl">
-      <div className="flex items-center gap-6 ">
+<div className="mx-auto mt-6 flex w-full max-w-7xl flex-col gap-8 px-6 md:flex-row lg:px-8">
 
-        {/* Icon */}
-        <div className="relative flex-shrink-0">
-          <div className="w-20 h-20 rounded-xl border-4 border-indigo-400 flex items-center justify-center bg-white">
-            <ClipboardCheck
-              size={30}
-              className="text-indigo-500"
-            />
-          </div>
+  {/* ================= LEFT FILTER ================= */}
+  <aside className="w-full shrink-0 md:w-[300px]">
+    <JobFilters />
+  </aside>
 
-          <div className="absolute -right-5 -bottom-2 w-11 h-11 rounded-full bg-green-500 flex items-center justify-center">
-            <Check size={27} className="text-white" strokeWidth={3} />
-          </div>
-        </div>
+  {/* ================= RIGHT JOBS ================= */}
+  <section className="mb-4 min-w-0 flex-1">
+    <JobList />
+  </section>
 
-        {/* Text */}
-        <div>
-          <h2 className="text-base md:text-lg font-bold text-gray-800">
-            Ready to start your journey as Data Scientist?
-          </h2>
+</div>
 
-          <p className="mt-2 text-sm md:text-base text-gray-500 font-medium">
-            Follow the recommended roadmap and build the skills you need.
-          </p>
-        </div>
-
-      </div>
-    </div>
-
-    </main>
-    <Footer />
-    </>
-  );
+</main>
+<Footer />
+</>
+  )
 }
-

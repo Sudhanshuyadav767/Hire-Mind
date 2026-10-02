@@ -5,7 +5,7 @@ import { Check, ArrowRight } from "lucide-react";
 export default function LeftCareerguidance() {
   return (
 <>
-      <div className="border rounded-xl shadow-sm px-4 py-4 sm:px-6 py-6 mt-4">
+      <div className="border-gray-200 rounded-xl shadow-sm px-4 py-4 sm:px-6 py-6 mt-4">
         <h2 className="text-xl  sm:text-2xl font-bold">What would you like guidance on?</h2>
 
         <p className="text-sm sm:text-base text-gray-600">
@@ -85,7 +85,7 @@ export default function LeftCareerguidance() {
          </div>
     
       </div>
-      <div className="border rounded-xl shadow-sm px-4 px-4 sm:px-6 sm:py-4 mt-6">
+      <div className="border-gray-200 rounded-xl shadow-sm px-4 px-4 sm:px-6 sm:py-4 mt-6">
         <div className="flex flex-col md:flex-row justify-between ">
         <h2 className="sm:text-xl text-lg font-bold">Your AI Career Guidance Results</h2>
         <p className="text-green-600 sm:text-base text-sm">Generate just for you</p>
@@ -174,7 +174,7 @@ export default function LeftCareerguidance() {
        </div>
 
       </div>
-      <div className="border rounded-xl shadow-sm px-4 py-4 sm:px-6 sm:py-6 mt-8">
+      <div className="border-gray-200 rounded-xl shadow-sm px-4 py-4 sm:px-6 sm:py-6 mt-8">
         <h2 className="sm:text-xl text-lg font-bold">
             Recommanded Roadmap Sanpshot
         </h2>

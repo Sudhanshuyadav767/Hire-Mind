@@ -1,49 +1,49 @@
 
 "use client";
-
+import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
-import { careerOverview, careerPath, skillsRequired } from "@/Data/data";
+import { careerOverview, careerPath, skillsRequired } from "@/Data/data2";
 
 export default function CareerOverview() {
   return (
     <div className="w-full space-y-6">
 
       {/* ================= CAREER OVERVIEW ================= */}
-      <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-6 text-2xl font-bold text-gray-900">
+      <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h2 className="mb-4 text-lg font-bold text-gray-900">
           {careerOverview.title}
         </h2>
 
         <div className="flex flex-col gap-6 md:flex-row md:items-center">
-          <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-full bg-indigo-50">
+          <div className="flex h-28 w-28 min-h-28 min-w-28 shrink-0 items-center justify-center rounded-full bg-indigo-50">
             {(() => {
               const Icon = careerOverview.icon;
               return <Icon size={65} strokeWidth={1.5} className="text-indigo-600" />;
             })()}
           </div>
 
-          <p className="max-w-3xl text-base leading-7 text-gray-600">
+          <p className="max-w-3xl text-base leading-5 text-gray-600">
             {careerOverview.description}
           </p>
         </div>
 
-        <div className="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {careerOverview.stats.map((item, index) => {
             const Icon = item.icon;
 
             return (
               <div
                 key={index}
-                className="rounded-lg border border-gray-200 bg-white p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+                className="rounded-lg border border-gray-200 bg-white p-3 transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
               >
-                <div className="mb-3 flex items-center gap-3">
+                <div className="mb-3 flex items-center gap-2">
                   <Icon size={30} strokeWidth={1.8} className="text-blue-500" />
                   <span className="text-sm font-medium text-gray-500">
                     {item.title}
                   </span>
                 </div>
 
-                <h3 className="text-lg font-bold text-gray-900">
+                <h3 className="text-base font-semibold text-gray-600">
                   {item.value}
                 </h3>
 
@@ -55,21 +55,22 @@ export default function CareerOverview() {
           })}
         </div>
 
-        <div className="my-7 border-t border-gray-200" />
+        <div className="my-5 border-t border-gray-200" />
 
-        <h3 className="mb-5 text-xl font-bold text-gray-900">
+        <h3 className="mb-5 text-lg font-bold text-gray-900">
           What Does a Data Scientist Do?
         </h3>
 
-        <div className="grid grid-cols-1 gap-y-5 md:grid-cols-2 md:gap-x-10">
+        <div className="grid grid-cols-1 gap-y-3 md:grid-cols-2 md:gap-x-10">
           {careerOverview.responsibilities.map((item, index) => (
             <div key={index} className="flex items-center gap-3">
+              <span className="bg-green-500 rounded-full flex items-center justify-center">
               <CheckCircle2
                 size={20}
-                className="shrink-0 text-green-500"
-                fill="currentColor"
-                strokeWidth={0}
+                className="shrink-0 text-white-600"
+              
               />
+              </span>
               <span className="text-sm font-medium text-gray-700">
                 {item}
               </span>
@@ -79,31 +80,31 @@ export default function CareerOverview() {
       </section>
 
       {/* ================= CAREER PATH ================= */}
-      <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-7 text-2xl font-bold text-gray-900">
+      <section className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+        <h2 className="mb-5 text-xl font-bold text-gray-700">
           Career Progressive Path
         </h2>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {careerPath.map((item, index) => {
             const Icon = item.icon;
 
             return (
               <div
                 key={index}
-                className={`flex min-h-[145px] flex-col items-center justify-center rounded-xl border p-5 text-center transition-all duration-200 hover:-translate-y-1 hover:shadow-md ${
+                className={`flex min-h-[135px] flex-col items-center justify-center rounded-xl border p-3 text-center transition-all duration-200 hover:-translate-y-1 hover:shadow-md ${
                   item.active
                     ? "border-indigo-400 bg-indigo-50 shadow-sm"
                     : "border-gray-200 bg-white"
                 }`}
               >
                 <Icon
-                  size={38}
+                  size={30}
                   strokeWidth={1.7}
                   className="mb-4 text-blue-500"
                 />
 
-                <h3 className="text-sm font-bold text-gray-800">
+                <h3 className="text-sm font-semibold text-gray-800">
                   {item.title}
                 </h3>
 
@@ -124,11 +125,11 @@ export default function CareerOverview() {
 
       {/* ================= SKILLS ================= */}
       <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-7 text-2xl font-bold text-gray-900">
+        <h2 className="mb-5 text-lg font-bold text-gray-900">
           Skills Required
         </h2>
 
-        <div className="space-y-6">
+        <div className="space-y-2">
           {skillsRequired.map((skill, index) => {
             const levelStyle =
               skill.level === "High"
@@ -174,9 +175,9 @@ export default function CareerOverview() {
         </div>
 
         <div className="mt-8 flex justify-center">
-          <button className="rounded-md border border-indigo-400 px-10 py-2.5 text-sm font-semibold text-indigo-600 transition-all duration-200 hover:bg-indigo-600 hover:text-white hover:shadow-md active:scale-[0.98]">
+       <Link href="/Career-Guidance/DataScientist1">   <button className="rounded-md border border-indigo-400 px-10 py-2.5 text-sm font-semibold text-indigo-600 transition-all duration-200 hover:bg-indigo-600 hover:text-white hover:shadow-md active:scale-[0.98]">
             View All Skills
-          </button>
+          </button></Link>
         </div>
       </section>
 

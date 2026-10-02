@@ -79,15 +79,15 @@ export default function AIServicesPage(){
         <Header />
         <main>
             <section className="bg-[#F3F0FF] px-10 py-1">
-                <div className="grid md:grid-cols-2 items-center gap-10">
+                <div className="grid md:grid-cols-2  gap-10">
                     <div>
 
                     
-                   <h1 className="text-5xl font-bold">AI Services</h1>
-                   <h2 className="mt-4 text-2xl font-medium">
+                   <h1 className="sm:text-xl text-lg font-bold">AI Services</h1>
+                   <h2 className="mt-4 text-lg font-medium">
                     Smart AI-powered tools to boost your career joureny
                    </h2>
-                   <p className="mt-4 text-gray-600 text-xl">
+                   <p className="mt-4 text-gray-600 text-base">
                     Our AI Services are designed to help you find the right
                     opportunites,improve your skills,and achieve your career goal faster
                    </p>
@@ -97,7 +97,7 @@ export default function AIServicesPage(){
                     src="/Images/Robot.png"
                     alt=" "
                     height={600}
-                    width={900}
+                    width={600}
                      />
 
        </div>
@@ -105,7 +105,7 @@ export default function AIServicesPage(){
                  </section>
                  <section className="px-10 py-2">
                  <div>
-                    <h2 className="mt-4 text-2xl font-medium">Our AI-Powered Services</h2>
+                    <h2 className="mt-4 text-lg font-medium">Our AI-Powered Services</h2>
                  <p className="text-gray-500 mt-3">Leverage the power of AI to enhance your profile,prepare better,and get hired faster.</p>
             </div>
             </section>
@@ -127,7 +127,7 @@ export default function AIServicesPage(){
     
 </div>
     <div>
-      <h3 className="font-semibold text-lg">
+      <h3 className="font-semibold text-base">
         {service.title}
       </h3>
 
@@ -158,7 +158,7 @@ export default function AIServicesPage(){
                         height={150}
                         />
                         <div>
-                            <h2 className="text-3xl font-bold">Experience the power of AI in your career joureny</h2>
+                            <h2 className="text-lg font-bold">Experience the power of AI in your career joureny</h2>
                             <p className="text-gray-600 mt-2">
                                 Our AI tools are continuously improving to provide you with the best career guidance and opportunities
                             </p>
