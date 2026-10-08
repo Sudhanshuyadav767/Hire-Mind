@@ -11,7 +11,7 @@ import { apiClient } from './apiClient';
  * @returns {Promise<Array<Object>>} Array of MCQ question objects with options & explanations
  */
 const generateGeminiMCQQuestions = async (skill, category, experienceLevel, count = 10) => {
-  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || 'AQ.Ab8RN6IcNHjqmAV9SvrEhOOgywq-V2g5Bt6Gy4PXPtbqoobT0A';
+  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`;
 
   const prompt = `You are HireMind's elite AI Skill Assessment Engine. Generate exactly ${count} realistic, practical multiple-choice questions to evaluate a candidate's real-world proficiency in "${skill}" (${category || 'General'}) at the "${experienceLevel || 'Intermediate'}" experience level.
@@ -105,7 +105,7 @@ const generateGeminiResultReport = async (skill, experienceLevel, questionsList 
   const isPassed = score >= 60;
 
   try {
-    const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || 'AQ.Ab8RN6IcNHjqmAV9SvrEhOOgywq-V2g5Bt6Gy4PXPtbqoobT0A';
+    const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`;
 
     const prompt = `You are HireMind's AI Skill Evaluator. The candidate completed a ${skill} (${experienceLevel}) Skill Assessment scoring ${score}% (${correctCount}/${totalQuestions} correct).

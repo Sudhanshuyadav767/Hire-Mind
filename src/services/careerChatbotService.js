@@ -2,7 +2,7 @@ import { apiClient } from './apiClient';
 
 // Live Google Gemini AI fallback generator using user's Gemini API Key
 const callGeminiDirectAI = async (userMessage) => {
-  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || 'AQ.Ab8RN6IcNHjqmAV9SvrEhOOgywq-V2g5Bt6Gy4PXPtbqoobT0A';
+  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
   
   const systemPrompt = `You are HireMind's elite AI Career Advisor. Provide clear, encouraging, structured professional advice for the user's query. Use formatting like bullet points, bold headers, and short actionable steps. At the end, suggest 3 short follow-up questions the user can ask next formatted as JSON at the very end like:
 [[SUGGESTIONS: ["Question 1", "Question 2", "Question 3"]]]`;

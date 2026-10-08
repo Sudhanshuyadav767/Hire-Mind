@@ -8,7 +8,7 @@ import { apiClient } from './apiClient';
  * @returns {Promise<Object>} Generated AI career guidance report JSON object
  */
 const generateGeminiCareerGuidance = async (inputPayload) => {
-  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || 'AQ.Ab8RN6IcNHjqmAV9SvrEhOOgywq-V2g5Bt6Gy4PXPtbqoobT0A';
+  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`;
 
   // Extract all user input parameters
@@ -260,7 +260,7 @@ export const careerGuidanceService = {
    */
   getRecommendedCourses: async (gaps = 'editing apps', limit = 6) => {
     try {
-      const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || 'AQ.Ab8RN6IcNHjqmAV9SvrEhOOgywq-V2g5Bt6Gy4PXPtbqoobT0A';
+      const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
       const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`;
       const prompt = `You are HireMind's AI course recommendation system. Generate ${limit} highly specific course recommendations tailored to the candidate's focus/skill gap: "${gaps}".
 Return ONLY a valid JSON array of course objects with this exact structure:
