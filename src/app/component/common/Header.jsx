@@ -87,11 +87,11 @@ const Header = ({ onOpenPostModal }) => {
   const candidateNavItems = [
     { 
       href: '/', 
-      label: 'Home', 
-      submenu: [
-        { href: '/', label: 'Home Overview', desc: 'Main platform dashboard & features', icon: Layers },
-        { href: '/categories', label: 'Browse Categories', desc: 'Explore top job sectors & skills', icon: Search }
-      ] 
+      label: 'Home' 
+      // submenu: [
+        // { href: '/', label: 'Home Overview', desc: 'Main platform dashboard & features', icon: Layers },
+        // { href: '/categories', label: 'Browse Categories', desc: 'Explore top job sectors & skills', icon: Search }
+      // ] 
     },
     { 
       href: '/find-jobs', 
@@ -285,11 +285,13 @@ const Header = ({ onOpenPostModal }) => {
                   }`}
                 >
                   <span className="whitespace-nowrap">{item.label}</span>
-                  <ChevronDown className={`h-3.5 w-3.5 shrink-0 transition-transform duration-200 ease-out ${isOpen ? 'rotate-180 text-[#2D24D0]' : 'text-slate-400'}`} />
+                  {(item.submenu || item.isMegaMenu) && (
+                    <ChevronDown className={`h-3.5 w-3.5 shrink-0 transition-transform duration-200 ease-out ${isOpen ? 'rotate-180 text-[#2D24D0]' : 'text-slate-400'}`} />
+                  )}
                 </Link>
 
                 {/* Dropdown Popover */}
-                {item.isMegaMenu ? (
+                {(item.submenu || item.isMegaMenu) && (item.isMegaMenu ? (
                   /* Mega Menu for AI Services */
                   <div 
                     className={`absolute -left-28 top-full mt-1 w-[680px] max-w-[90vw] rounded-2xl border border-slate-200/90 bg-white/98 backdrop-blur-xl p-5 shadow-2xl transition-all duration-200 ease-out transform origin-top-left ${
@@ -368,7 +370,7 @@ const Header = ({ onOpenPostModal }) => {
                       })}
                     </div>
                   </div>
-                )}
+                ))}
               </div>
             );
           })}
@@ -576,13 +578,15 @@ const Header = ({ onOpenPostModal }) => {
                     >
                       {item.label}
                     </Link>
-                    <button 
+                    {(item.submenu || item.isMegaMenu) && (
+                      <button 
                       type="button" 
                       onClick={() => setExpandedMobileItem(isExpanded ? null : item.href)} 
                       className="p-1 text-slate-400 hover:text-[#2D24D0]"
                     >
                       <ChevronDown className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-180 text-[#2D24D0]' : ''}`} />
                     </button>
+                    )}
                   </div>
 
                   {isExpanded && (
