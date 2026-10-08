@@ -120,3 +120,67 @@ export const skillsRequired = [
     level: "Low",
   },
 ];
+
+import {
+  Code2,
+  ShoppingCart,
+  Landmark,
+  Hospital,
+  Radio,
+} from "lucide-react";
+
+export const topHiringIndustries = [
+  {
+    name: "IT & Software Services",
+    icon: Code2,
+    demand: "High demand",
+  },
+  {
+    name: "E-Commerce",
+    icon: ShoppingCart,
+    demand: "High demand",
+  },
+  {
+    name: "Finance & Banking",
+    icon: Landmark,
+    demand: "High demand",
+  },
+  {
+    name: "Healthcare",
+    icon: Hospital,
+    demand: "High demand",
+  },
+  {
+    name: "Telecom",
+    icon: Radio,
+    demand: "High demand",
+  },
+];
+
+export const topJobRoles = [
+  {
+    title: "Java Developer",
+    salary: "₹5–10 LPA",
+    demand: "High demand",
+  },
+  {
+    title: "React Developer",
+    salary: "₹5–10 LPA",
+    demand: "High demand",
+  },
+  {
+    title: "Machine Learning Engineer",
+    salary: "₹7–15 LPA",
+    demand: "High demand",
+  },
+  {
+    title: "Full Stack Developer",
+    salary: "₹6–12 LPA",
+    demand: "High demand",
+  },
+  {
+    title: "UI/UX Designer",
+    salary: "₹4–8 LPA",
+    demand: "Moderate demand",
+  },
+];

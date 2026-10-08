@@ -1,35 +1,37 @@
-import Header from "@/app/component/common/Header"
-import Footer from "@/app/component/common/Footer"
-import { blogs } from "@/Data/data";
-import {popularposts} from "@/Data/data";
+import Header from "@/app/component/common/Header";
+import Footer from "@/app/component/common/Footer";
+import { blogs, popularposts } from "@/Data/data";
 import Image from "next/image";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Search } from "lucide-react";
 import Link from "next/link";
 
 export default function Blogs() {
   return (
     <>
-    <Header />
+      <Header />
       <section className="bg-[#F3F0FF] py-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold">
+          <h1 className="text-4xl font-bold text-gray-900">
             Blogs & Career Insights
           </h1>
 
           <p className="text-gray-600 mt-3">
-            Explore expert advice, career tips and industry trends and resources to <br />
-                   help you grow in your professional journey
+            Explore expert advice, career tips and industry trends to help you grow in your professional journey.
           </p>
 
-          <div className="mt-8 max-w-2xl mx-auto flex border rounded-lg overflow-hidden bg-white">
+          <div className="mx-auto mt-8 flex w-full max-w-2xl items-center overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-200 focus-within:border-[#4438df] focus-within:ring-4 focus-within:ring-[#4438df]/10">
+            <div className="pl-4 text-gray-400">
+              <Search size={20} />
+            </div>
+
             <input
               type="text"
-              placeholder="Search articles, topics or keywords"
-              className="flex-1 px-4 py-3 outline-none"
+              placeholder="Search articles, topics or keywords..."
+              className="flex-1 bg-transparent px-3 py-3.5 text-sm text-gray-700 outline-none placeholder:text-gray-400 sm:text-base"
             />
 
-            <button style={{ backgroundColor: "blue", color: "white",cursor: "pointer"}}
-            className="bg-blue-100 text-blue-600 px-5 py-2 rounded font-semibold hover:bg-blue-200 transition"
+            <button
+              className="mr-1.5 rounded-lg bg-[#4438df] px-5 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-[#372fc5] hover:shadow-md active:scale-95 sm:px-6 sm:text-base"
             >
               Search
             </button>
@@ -37,140 +39,181 @@ export default function Blogs() {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 md:py-10">
-        <div className="flex flex-col lg:flex-row gap-8">
-          
-        
-          <div className="flex-1 max-w-6xl">
-            <h2 className="text-2xl font-bold mb-6">
-              Latest Articles
-            </h2>
+      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-10 lg:flex-row lg:items-start">
+          <div className="min-w-0 flex-1">
+            <div className="mb-7 flex items-end justify-between">
+              <div>
+                <p className="mb-1 text-sm font-semibold uppercase tracking-wider text-[#4438df]">
+                  Our Blog
+                </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                  Latest Articles
+                </h2>
+
+                <p className="mt-2 text-sm text-gray-500">
+                  Explore the latest career tips, insights and industry trends.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
               {blogs.map((blog) => (
-                <div
+                <article
                   key={blog.id}
-                  className="bg-white rounded-2xl border shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden"
+                  className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#4438df]/20 hover:shadow-xl"
                 >
-                  <Image
-                    src={blog.image}
-                    alt={blog.title}
-                    width={400}
-                    height={250}
-                    className="w-full h-52 object-cover"
-                  />
+                  <div className="relative overflow-hidden">
+                    <Image
+                      src={blog.image}
+                      alt={blog.title}
+                      width={400}
+                      height={250}
+                      className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  </div>
 
-                  <div className="p-5 flex flex-col flex-grow">
-                    <div className="flex justify-between text-xs text-gray-500">
+                  <div className="flex flex-1 flex-col p-5">
+                    <div className="flex items-center justify-between text-xs text-gray-500">
                       <span>{blog.date}</span>
-                      <span>{blog.readTime}</span>
+                      <span className="rounded-full bg-gray-100 px-2.5 py-1 font-medium">
+                        {blog.readTime}
+                      </span>
                     </div>
 
-                    <h3 className="font-semibold text-lg mt-3 line-clamp-2">
+                    <h3 className="mt-4 line-clamp-2 text-lg font-bold leading-snug text-gray-900 transition-colors duration-200 group-hover:text-[#4438df]">
                       {blog.title}
                     </h3>
 
-                    <p className="text-gray-600 text-sm mt-2 line-clamp-3 flex-grow">
+                    <p className="mt-3 line-clamp-3 flex-grow text-sm leading-6 text-gray-600">
                       {blog.description}
                     </p>
 
-                    <div className="flex justify-between items-center mt-5 pt-4 border-t">
-                      <div>
-                        <p className="font-medium text-sm">
+                    <div className="mt-5 flex items-center justify-between border-t border-gray-100 pt-4">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold text-gray-800">
                           {blog.author}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="truncate text-xs text-gray-500">
                           {blog.role}
                         </p>
                       </div>
-                     <Link href="/blogs/blog1">
-                      <button className="text-blue-600 font-medium text-sm hover:text-blue-800">
-                        Read More⟶
-                      </button>
+
+                      <Link
+                        href="/blogs/blog1"
+                        className="ml-3 flex shrink-0 items-center gap-1 text-sm font-semibold text-[#4438df] transition-all duration-200 hover:gap-2 hover:text-[#3128b8]"
+                      >
+                        Read More
+                        <span>→</span>
                       </Link>
                     </div>
                   </div>
-                </div>
+                </article>
               ))}
             </div>
           </div>
 
-          <div>
-          <div className="w-full lg:w-72 shrink-0">
-            <div className="bg-white border rounded-xl p-5  shadow-sm sticky ">
-              <h3 className="font-semibold text-lg mb-4">
-                Categories
-              </h3>
+          <aside className="w-full shrink-0 lg:sticky lg:top-6 lg:w-72">
+            <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+              <div className="mb-5">
+                <p className="text-xs font-semibold uppercase tracking-wider text-[#4438df]">
+                  Explore
+                </p>
+                <h3 className="mt-1 text-lg font-bold text-gray-900">
+                  Categories
+                </h3>
+              </div>
 
-              <ul className="space-y-3">
-                <li className="cursor-pointer hover:text-blue-600">
-                  Career Tips
-                </li>
-                <li className="cursor-pointer hover:text-blue-600">
-                  Interview Preparation
-                </li>
-                <li className="cursor-pointer hover:text-blue-600">
-                  Resume Building
-                </li>
-                <li className="cursor-pointer hover:text-blue-600">
-                  Remote Work
-                </li>
-                <li className="cursor-pointer hover:text-blue-600">
-                  Industry Trends
-                </li>
+              <ul className="space-y-2">
+                {[
+                  "Career Tips",
+                  "Interview Preparation",
+                  "Resume Building",
+                  "Remote Work",
+                  "Industry Trends",
+                ].map((category) => (
+                  <li key={category}>
+                    <button className="group flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium text-gray-600 transition-all duration-200 hover:bg-[#f5f3ff] hover:text-[#4438df]">
+                      <span>{category}</span>
+                      <span className="translate-x-0 opacity-0 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100">
+                        →
+                      </span>
+                    </button>
+                  </li>
+                ))}
               </ul>
             </div>
-          </div>
-     <div className="w-full lg:w-72 mt-4 shrink-0">
-            <div  className="bg-white border rounded-xl p-5  shadow-sm sticky ">
-              <h3 className="font-semibold text-lg mb-4">
-                Popular Posts
-              </h3>
-              <hr className="my-4 border-gray-300"/>
-              <div className="space-y-4">
-                {popularposts.map((item)=>(
-                  <div 
-                  key={item}
-                    className="flex items-center gap-3 mb-4">
 
-                
-                    <Image
-                    src={item.image}
-                    alt=""
-                    width={80}
-                    height={80}
-                    className="rounded-lg object-cover"
-                   
-                  />
-                
-                <div>
-                  <h2 className="text-gary-600">{item.demandedskill}</h2>
-                  <p className="text-gray-600">  
-                  {item.date}</p>
-                </div>
-                </div>
-             ))}
-              </div> 
-            </div>
-            </div>
-            </div>
-            </div>
-            </section>
-             <div className="flex items-center justify-center gap-2 mb-8 mt-8">
-              <button className="w-8 h-8 rounded border items-center justify-center font-bold text-gary-700">
-                <ChevronLeft size={18} />
-              </button>
-                <button className="w-8 h-8 rounded border font-bold bg-blue-600 text-gray-700 "
-                style={{background:"rgb(15, 114, 243)"}}
-                >1</button>
-                 <button className="w-8 h-8 rounded border font-bold text-gary-700">2</button>
-                  <button className="w-8 h-8 rounded border font-bold text-gray-700">3</button>
-                   <button className="w-8 h-8 rounded border font-bold text-gray-700">4</button>
-                    <button className="w-8 h-8 rounded border font-bold text-gray-700">⋯</button>
-                     <button className="w-13 h-8 rounded border font-bold text-gray-700">Next→</button>
-
+            <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+              <div className="mb-5">
+                <p className="text-xs font-semibold uppercase tracking-wider text-[#4438df]">
+                  Trending
+                </p>
+                <h3 className="mt-1 text-lg font-bold text-gray-900">
+                  Popular Posts
+                </h3>
               </div>
-    <Footer />
+
+              <div className="space-y-5">
+                {popularposts.map((item, index) => (
+                  <div key={index} className="group flex cursor-pointer gap-3">
+                    <div className="relative shrink-0 overflow-hidden rounded-lg">
+                      <Image
+                        src={item.image}
+                        alt={item.demandedskill}
+                        width={70}
+                        height={70}
+                        className="h-16 w-16 object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+
+                    <div className="min-w-0">
+                      <h4 className="line-clamp-2 text-sm font-semibold leading-5 text-gray-800 transition-colors duration-200 group-hover:text-[#4438df]">
+                        {item.demandedskill}
+                      </h4>
+                      <p className="mt-1.5 text-xs text-gray-500">
+                        {item.date}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <div className="mb-12 mt-2 flex items-center justify-center gap-2 px-4">
+        <button className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 transition-all duration-200 hover:border-[#4438df] hover:bg-[#f5f3ff] hover:text-[#4438df]">
+          <ChevronLeft size={17} />
+        </button>
+
+        <button className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#4438df] text-sm font-semibold text-white shadow-sm">
+          1
+        </button>
+
+        {[2, 3, 4].map((page) => (
+          <button
+            key={page}
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-sm font-semibold text-gray-600 transition-all duration-200 hover:border-[#4438df] hover:bg-[#f5f3ff] hover:text-[#4438df]"
+          >
+            {page}
+          </button>
+        ))}
+
+        <span className="flex h-9 w-9 items-center justify-center text-gray-400">
+          ...
+        </span>
+
+        <button className="flex h-9 items-center justify-center gap-1 rounded-lg border border-gray-200 bg-white px-3.5 text-sm font-semibold text-gray-600 transition-all duration-200 hover:border-[#4438df] hover:bg-[#f5f3ff] hover:text-[#4438df]">
+          Next
+          <span>→</span>
+        </button>
+      </div>
+
+      <Footer />
     </>
   );
 }

@@ -224,7 +224,7 @@ export default function LeftCareerguidance() {
           </span>
         </div>
 
-        {/* Subtab Navigation (2.1 Report, 2.3 Skills, 2.4 Roadmap, 2.5 Insights, 2.6 Courses) */}
+        {/* Subtab Navigation */}
         <div className="flex flex-wrap gap-2 border-b border-slate-200 pb-2">
           <button
             onClick={() => handleTabChange("report")}
@@ -276,7 +276,6 @@ export default function LeftCareerguidance() {
           </div>
         ) : (
           <div>
-            {/* 2.1 Main Report */}
             {activeTab === "report" && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start pt-2">
                 <div className="space-y-4">
@@ -311,7 +310,6 @@ export default function LeftCareerguidance() {
               </div>
             )}
 
-            {/* 2.3 Skill Gap Analysis */}
             {activeTab === "skills" && (
               <div className="space-y-4 pt-2">
                 <h4 className="text-sm font-bold text-slate-900">AI Skill Gap Analysis for {activeData.topRole}</h4>
@@ -344,7 +342,6 @@ export default function LeftCareerguidance() {
               </div>
             )}
 
-            {/* 2.4 Roadmap */}
             {activeTab === "roadmap" && (
               <div className="space-y-4 pt-2">
                 <h4 className="text-sm font-bold text-slate-900">Step-by-Step Learning Roadmap</h4>
@@ -365,7 +362,6 @@ export default function LeftCareerguidance() {
               </div>
             )}
 
-            {/* 2.5 Market Insights */}
             {activeTab === "insights" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                 <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
@@ -389,7 +385,6 @@ export default function LeftCareerguidance() {
               </div>
             )}
 
-            {/* 2.6 Recommended Courses */}
             {activeTab === "courses" && (
               <div className="space-y-3 pt-2">
                 <h4 className="text-sm font-bold text-slate-900">Recommended Courses for Skill Gaps</h4>

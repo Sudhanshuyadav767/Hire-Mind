@@ -1,3 +1,6 @@
+"use client";
+
+import React from 'react';
 import Header from "@/app/component/common/Header";
 import Footer from "@/app/component/common/Footer";
 import ResumeReviewHero from "../component/resume_review/ResumeReviewHero";
