@@ -123,7 +123,7 @@ export default function RecentMoc1(){
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
             <div  className="w-full flex items-center gap-4 px-2 py-2 sm:px-4 sm:py-4 border border-gray-200">
                 <span className="w-12 h-12 bg-[#C5B8FF] rounded-lg shadow-sm flex justify-center items-center">
-                    <History className="w-8 h-8 text-indigo-600"/>
+                    <History className="w-8 h-8 text-white"/>
                 </span>
                 <span>
                     <h3 className="sm:text-lg text-base font-medium">Rearch the data</h3>
@@ -132,7 +132,7 @@ export default function RecentMoc1(){
             </div>
             <div className="w-full flex items-center gap-4 px-2 py-2 sm:px-4 sm:py-4 border border-gray-200">
                  <span className="w-12 h-12 bg-[#C5B8FF] rounded-lg shadow-sm flex justify-center items-center">
-                    <Users className="w-8 h-8 text-indigo-600"/>
+                    <Users className="w-8 h-8 text-white"/>
                  </span>
                 <span >
                     <h3 className="sm:text-lg text-base font-medium">Practice Regularly</h3>
@@ -141,7 +141,7 @@ export default function RecentMoc1(){
             </div>
             <div  className="w-full flex items-center gap-4 px-2 py-2 sm:px-4 sm:py-4 border border-gray-200">
                  <span className="w-12 h-12 bg-[#C5B8FF] rounded-lg shadow-sm flex justify-center items-center">
-                    <BriefcaseBusiness className="w-8 h-8 text-indigo-600"/>
+                    <BriefcaseBusiness className="w-8 h-8 text-white"/>
                  </span>
                 <span>
                     <h3 className="sm:text-lg text-base font-medium">Structure Your Answer</h3>
@@ -150,7 +150,7 @@ export default function RecentMoc1(){
             </div>
             <div  className="w-full flex items-center gap-4 px-2 py-2 sm:px-4 sm:py-4 border border-gray-200">
                  <span className="w-12 h-12 bg-[#C5B8FF] rounded-lg shadow-sm flex justify-center items-center">
-                    <Brain className="w-8 h-8 text-indigo-600"/>
+                    <Brain className="w-8 h-8 text-white"/>
                  </span>
                 <span>
                     <h3 className="sm:text-lg text-base font-medium">Stay calm & confident</h3>
