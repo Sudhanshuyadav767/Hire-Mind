@@ -22,7 +22,7 @@ export default function Mockinterview(){
             <div className="">
                 <span  className="flex gap-4 w-full">
                 <span className=" bg-[#C5B8FF] flex items-center justify-center rounded-full w-12 h-12 min-w-12 min-h-12">
-                    <Monitor  className="w-6 h-6 text-blue-600"/>
+                    <Monitor  className="w-6 h-6 text-white "/>
                 </span>
                 <span>
                 <h2 className="sm:text-lg text-base font-semibold">Realistic Experience</h2>
@@ -33,7 +33,7 @@ export default function Mockinterview(){
             <div>
                 <span className="flex gap-4 w-full">
                 <span className="  bg-[#C5B8FF] flex items-center justify-center rounded-full w-12 h-12 min-w-12 min-h-12 ">
-                    <FileText className="w-6 h-6 text-blue-600" />
+                    <FileText className="w-6 h-6 text-blue-200" />
                 </span>
                 <span>
                 <h2  className="sm:text-lg text-base font-semibold">Instant Feedback</h2>
