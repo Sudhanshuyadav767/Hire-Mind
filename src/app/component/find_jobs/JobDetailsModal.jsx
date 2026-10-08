@@ -57,7 +57,7 @@ export default function JobDetailsModal({ job, isOpen, onClose, onApplySuccess }
       status: 'Submitted',
       stageName: 'Resume Shortlisting',
       location: job.location || 'Remote',
-      salary: job.salary || '$90k - $120k',
+      salary: job.salary || '₹90k - ₹120k',
       type: job.type || 'Full Time',
       coverLetter: coverLetter || 'Applied via HireMind AI Platform'
     };

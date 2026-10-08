@@ -38,6 +38,7 @@ import {
 import { jobService } from '@/services/jobService';
 import { applicationService } from '@/services/applicationService';
 import { emailService } from '@/services/emailService';
+import { companyService } from '@/services/companyService';
 
 export default function RecruiterHomePage() {
   const router = useRouter();
@@ -56,6 +57,9 @@ export default function RecruiterHomePage() {
     location: '',
     jobType: 'full_time',
     workMode: 'remote',
+    keySkills: '',
+    minExperienceYears: 0,
+    maxExperienceYears: '',
     minSalary: 90000,
     maxSalary: 140000,
   });
@@ -92,33 +96,26 @@ export default function RecruiterHomePage() {
     canManageCandidates: true,
   });
 
-  // Helper to load HR team members from Local Storage
-  const loadHrMembers = () => {
+  // Active Recruiter Email Helper
+  const getActiveRecruiterEmail = () => {
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('hiremind_hr_team_members');
+      const stored = localStorage.getItem('hiremind_user');
       if (stored) {
         try {
-          setHrMembers(JSON.parse(stored));
+          const u = JSON.parse(stored);
+          return u.email?.toLowerCase().trim() || '';
         } catch (e) {}
-      } else {
-        const defaultTeam = [
-          {
-            id: 'hr-101',
-            fullName: 'Priya Sharma',
-            email: 'priya.hr@hiremind.com',
-            roleTitle: 'Technical Recruiter',
-            assignedTasks: 'Job Posting & Candidate Screening',
-            status: 'Active',
-            password: 'Priya@HR#2026',
-            createdAt: new Date().toLocaleDateString(),
-            canPostJobs: true,
-            canManageInterviews: true,
-            canManageCandidates: true,
-          }
-        ];
-        setHrMembers(defaultTeam);
-        localStorage.setItem('hiremind_hr_team_members', JSON.stringify(defaultTeam));
       }
+    }
+    return '';
+  };
+
+  // Helper to load HR team members for the active recruiter
+  const loadHrMembers = async () => {
+    const recruiterEmail = getActiveRecruiterEmail();
+    const res = await companyService.listSubHr(recruiterEmail);
+    if (res?.items) {
+      setHrMembers(res.items);
     }
   };
 
@@ -127,10 +124,12 @@ export default function RecruiterHomePage() {
     setIsLoading(true);
     let apiJobs = [];
     let localJobs = [];
+    const recruiterEmail = getActiveRecruiterEmail();
+    const jobsKey = recruiterEmail ? `hiremind_posted_jobs_${recruiterEmail}` : 'hiremind_posted_jobs';
 
     // Read jobs from Local Storage
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('hiremind_posted_jobs');
+      const stored = localStorage.getItem(jobsKey);
       if (stored) {
         try { localJobs = JSON.parse(stored); } catch (e) {}
       }
@@ -172,12 +171,12 @@ export default function RecruiterHomePage() {
     const finalJobs = Array.from(mergedMap.values());
     setJobs(finalJobs);
 
-    // Save to localStorage for candidate synchronization
+    // Save to localStorage
     if (typeof window !== 'undefined') {
-      localStorage.setItem('hiremind_posted_jobs', JSON.stringify(finalJobs));
+      localStorage.setItem(jobsKey, JSON.stringify(finalJobs));
     }
 
-    // Load recent applications from local storage or API
+    // Load recent applications
     let appList = [];
     if (typeof window !== 'undefined') {
       const storedApps = localStorage.getItem('hiremind_applied_jobs');
@@ -212,58 +211,36 @@ export default function RecruiterHomePage() {
     e.preventDefault();
     setIsSubmittingHr(true);
 
+    const recruiterEmail = getActiveRecruiterEmail();
     const generatedPassword = hrFormData.customPassword.trim() || `${hrFormData.fullName.split(' ')[0]}@HR#${Math.floor(1000 + Math.random() * 9000)}`;
 
-    const newHrObj = {
-      id: `hr-${Date.now()}`,
+    const res = await companyService.createSubHr({
       fullName: hrFormData.fullName,
-      email: hrFormData.email.toLowerCase().trim(),
+      email: hrFormData.email,
       roleTitle: hrFormData.roleTitle,
-      assignedTasks: hrFormData.assignedTasks || 'Job Posting, Interviews & User Management',
-      status: 'Active',
+      assignedTasks: hrFormData.assignedTasks,
       password: generatedPassword,
-      createdAt: new Date().toLocaleDateString(),
       canPostJobs: hrFormData.canPostJobs,
       canManageInterviews: hrFormData.canManageInterviews,
       canManageCandidates: hrFormData.canManageCandidates,
-      lastEmailSentAt: new Date().toLocaleTimeString(),
-    };
+    }, recruiterEmail);
 
-    // Save HR to LocalStorage
-    const updatedTeam = [newHrObj, ...hrMembers];
-    setHrMembers(updatedTeam);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('hiremind_hr_team_members', JSON.stringify(updatedTeam));
-
-      // Register HR user account so they can log in at /login
-      const existingRegistered = localStorage.getItem('hiremind_registered_users');
-      let registeredList = [];
-      if (existingRegistered) {
-        try { registeredList = JSON.parse(existingRegistered); } catch (err) {}
-      }
-      registeredList.push({
-        id: newHrObj.id,
-        email: newHrObj.email,
-        password: generatedPassword,
-        username: newHrObj.fullName,
-        role: 'recruiter',
-        roleTitle: newHrObj.roleTitle,
-      });
-      localStorage.setItem('hiremind_registered_users', JSON.stringify(registeredList));
+    if (res?.data) {
+      setHrMembers(prev => [res.data, ...prev.filter(h => h.email !== res.data.email)]);
     }
 
     // Send Real Email via EmailService (Mailpit SMTP / Mail API)
-    let emailStatusMessage = `📧 Credentials Email dispatched to ${newHrObj.email}! (Login ID: ${newHrObj.email} | Password: ${generatedPassword})`;
+    let emailStatusMessage = `📧 Credentials Email dispatched to ${hrFormData.email}! (Login ID: ${hrFormData.email} | Password: ${generatedPassword})`;
     try {
       const mailRes = await emailService.sendHrCredentialsEmail({
-        fullName: newHrObj.fullName,
-        email: newHrObj.email,
+        fullName: hrFormData.fullName,
+        email: hrFormData.email,
         password: generatedPassword,
-        roleTitle: newHrObj.roleTitle,
-        assignedTasks: newHrObj.assignedTasks,
+        roleTitle: hrFormData.roleTitle,
+        assignedTasks: hrFormData.assignedTasks,
       });
       if (mailRes?.success) {
-        emailStatusMessage = `✅ Credentials Email delivered to ${newHrObj.email}! (Mailpit ID Captured — View in Inbox at http://localhost:8025)`;
+        emailStatusMessage = `✅ Credentials Email delivered to ${hrFormData.email}! (Mailpit ID Captured — View in Inbox at http://localhost:8025)`;
       }
     } catch (mailErr) {
       console.warn('Email dispatch warning:', mailErr);
@@ -291,7 +268,8 @@ export default function RecruiterHomePage() {
     setMailSuccessNotice(emailStatusMessage);
     
     try {
-      const mailRes = await emailService.sendHrCredentialsEmail({
+      await companyService.resendSubHrCredentials(hr.id, hr.password);
+      await emailService.sendHrCredentialsEmail({
         fullName: hr.fullName,
         email: hr.email,
         password: hr.password,
@@ -301,25 +279,19 @@ export default function RecruiterHomePage() {
       
       setMailSuccessNotice(`✅ Credentials Email re-sent to ${hr.email}! (Login ID: ${hr.email} | Password: ${hr.password} — Captured in Mailpit at http://localhost:8025)`);
       
-      // Update last sent time
       const updated = hrMembers.map(item => item.id === hr.id ? { ...item, lastEmailSentAt: new Date().toLocaleTimeString() } : item);
       setHrMembers(updated);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('hiremind_hr_team_members', JSON.stringify(updated));
-      }
     } catch (e) {
       setMailSuccessNotice(`📧 Credentials notice: Login ID: ${hr.email} | Password: ${hr.password}`);
     }
   };
 
   // Delete / Deactivate HR Member Handler
-  const handleDeleteHrMember = (hrId) => {
+  const handleDeleteHrMember = async (hrId) => {
     if (confirm('Are you sure you want to deactivate and remove this HR team member?')) {
-      const updated = hrMembers.filter(h => String(h.id) !== String(hrId));
-      setHrMembers(updated);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('hiremind_hr_team_members', JSON.stringify(updated));
-      }
+      const recruiterEmail = getActiveRecruiterEmail();
+      await companyService.deleteSubHr(hrId, recruiterEmail);
+      setHrMembers(prev => prev.filter(h => String(h.id) !== String(hrId)));
     }
   };
 
@@ -329,7 +301,7 @@ export default function RecruiterHomePage() {
     setIsSubmittingJob(true);
 
     const newJobId = `job-${Date.now()}`;
-    const newJobObj = {
+    let newJobObj = {
       id: newJobId,
       title: formData.title,
       description: formData.description,
@@ -337,7 +309,10 @@ export default function RecruiterHomePage() {
       jobType: formData.jobType || 'full_time',
       minSalary: Number(formData.minSalary) || 90000,
       maxSalary: Number(formData.maxSalary) || 140000,
-      salary: `$${(formData.minSalary / 1000).toFixed(0)}k - $${(formData.maxSalary / 1000).toFixed(0)}k`,
+      keySkills: formData.keySkills,
+      minExperienceYears: Number(formData.minExperienceYears) || 0,
+      maxExperienceYears: formData.maxExperienceYears,
+      salary: `₹${(formData.minSalary / 1000).toFixed(0)}k - ₹${(formData.maxSalary / 1000).toFixed(0)}k`,
       status: 'published',
       applicantCount: 0,
       company: 'Enterprise Partner',
@@ -346,22 +321,32 @@ export default function RecruiterHomePage() {
 
     // Save to Backend API
     try {
-      await jobService.createJob({
+      const res = await jobService.createJob({
         title: formData.title,
         description: formData.description,
         location: formData.location,
         jobType: formData.jobType,
         minSalary: Number(formData.minSalary),
         maxSalary: Number(formData.maxSalary),
+        keySkills: formData.keySkills,
+        minExperienceYears: Number(formData.minExperienceYears) || 0,
+        maxExperienceYears: formData.maxExperienceYears,
       });
+      if (res?.data?.id) {
+        newJobObj.id = res.data.id;
+      }
     } catch (e) {
       console.warn('Backend job create notice (saved locally):', e);
     }
 
     // Update Local State & LocalStorage
-    const updatedJobs = [newJobObj, ...jobs];
+    const updatedJobs = [newJobObj, ...jobs.filter(j => String(j.id) !== String(newJobObj.id))];
     setJobs(updatedJobs);
+
     if (typeof window !== 'undefined') {
+      const recruiterEmail = getActiveRecruiterEmail();
+      const jobsKey = recruiterEmail ? `hiremind_posted_jobs_${recruiterEmail}` : 'hiremind_posted_jobs';
+      localStorage.setItem(jobsKey, JSON.stringify(updatedJobs));
       localStorage.setItem('hiremind_posted_jobs', JSON.stringify(updatedJobs));
       window.dispatchEvent(new Event('hiremind_jobs_updated'));
     }
@@ -373,6 +358,9 @@ export default function RecruiterHomePage() {
       location: '',
       jobType: 'full_time',
       workMode: 'remote',
+      keySkills: '',
+      minExperienceYears: 0,
+      maxExperienceYears: '',
       minSalary: 90000,
       maxSalary: 140000,
     });
@@ -392,7 +380,7 @@ export default function RecruiterHomePage() {
       jobType: editFormData.jobType,
       minSalary: Number(editFormData.minSalary),
       maxSalary: Number(editFormData.maxSalary),
-      salary: `$${(editFormData.minSalary / 1000).toFixed(0)}k - $${(editFormData.maxSalary / 1000).toFixed(0)}k`,
+      salary: `₹${(editFormData.minSalary / 1000).toFixed(0)}k - ₹${(editFormData.maxSalary / 1000).toFixed(0)}k`,
     };
 
     try {
@@ -401,7 +389,11 @@ export default function RecruiterHomePage() {
 
     const updatedJobs = jobs.map(j => String(j.id) === String(editingJob.id) ? updatedJobObj : j);
     setJobs(updatedJobs);
+
     if (typeof window !== 'undefined') {
+      const recruiterEmail = getActiveRecruiterEmail();
+      const jobsKey = recruiterEmail ? `hiremind_posted_jobs_${recruiterEmail}` : 'hiremind_posted_jobs';
+      localStorage.setItem(jobsKey, JSON.stringify(updatedJobs));
       localStorage.setItem('hiremind_posted_jobs', JSON.stringify(updatedJobs));
       window.dispatchEvent(new Event('hiremind_jobs_updated'));
     }
@@ -433,6 +425,9 @@ export default function RecruiterHomePage() {
 
     setJobs(updatedJobs);
     if (typeof window !== 'undefined') {
+      const recruiterEmail = getActiveRecruiterEmail();
+      const jobsKey = recruiterEmail ? `hiremind_posted_jobs_${recruiterEmail}` : 'hiremind_posted_jobs';
+      localStorage.setItem(jobsKey, JSON.stringify(updatedJobs));
       localStorage.setItem('hiremind_posted_jobs', JSON.stringify(updatedJobs));
       window.dispatchEvent(new Event('hiremind_jobs_updated'));
     }
@@ -1049,7 +1044,7 @@ export default function RecruiterHomePage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-[#11121b]">Min Salary ($)</label>
+                  <label className="block text-xs font-bold text-[#11121b]">Min Salary (₹)</label>
                   <input
                     type="number"
                     value={formData.minSalary}
@@ -1058,13 +1053,28 @@ export default function RecruiterHomePage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#11121b]">Max Salary ($)</label>
+                  <label className="block text-xs font-bold text-[#11121b]">Max Salary (₹)</label>
                   <input
                     type="number"
                     value={formData.maxSalary}
                     onChange={(e) => setFormData({ ...formData, maxSalary: e.target.value })}
                     className="mt-1 h-10 w-full rounded-xl border border-slate-200 px-3 text-xs outline-none focus:border-[#463fe6] font-medium"
                   />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-[#11121b]">Experience Required (Years)</label>
+                  <div className="mt-1 grid grid-cols-2 gap-2">
+                    <input type="number" min="0" placeholder="Min" value={formData.minExperienceYears} onChange={(e) => setFormData({ ...formData, minExperienceYears: e.target.value })} className="h-10 w-full rounded-xl border border-slate-200 px-3 text-xs outline-none focus:border-[#463fe6]" />
+                    <input type="number" min="0" placeholder="Max" value={formData.maxExperienceYears} onChange={(e) => setFormData({ ...formData, maxExperienceYears: e.target.value })} className="h-10 w-full rounded-xl border border-slate-200 px-3 text-xs outline-none focus:border-[#463fe6]" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-[#11121b]">Key Skills</label>
+                  <input type="text" placeholder="React, Node.js, TypeScript" value={formData.keySkills} onChange={(e) => setFormData({ ...formData, keySkills: e.target.value })} className="mt-1 h-10 w-full rounded-xl border border-slate-200 px-3 text-xs outline-none focus:border-[#463fe6]" />
+                  <p className="mt-1 text-[10px] text-slate-400">Separate skills with commas.</p>
                 </div>
               </div>
 

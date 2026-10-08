@@ -1,40 +1,66 @@
-import Image from "next/image"
-import LeftCareerGuidance from '../component/Career-guidance/LeftCareer-guidance'
-// import RightCareerGuidance from '../component/Career-guidance/RightCareer-guidance'
-import Header from "@/app/component/common/Header"
-import Footer from "@/app/component/common/Footer"
-export default function careerGuidance(){
-    return(
-        <>
+"use client";
+
+import React, { useState } from "react";
+import Header from "@/app/component/common/Header";
+import Footer from "@/app/component/common/Footer";
+import CareerGuidanceHero from "../component/guidance/CareerGuidanceHero";
+import GuidanceFormSection from "../component/guidance/GuidanceFormSection";
+import GuidanceResultsSection from "../component/guidance/GuidanceResultsSection";
+import RoadmapSnapshotSection from "../component/guidance/RoadmapSnapshotSection";
+import CareerProfileCard from "../component/guidance/CareerProfileCard";
+import PopularCareerPathsCard from "../component/guidance/PopularCareerPathsCard";
+import RecommendedNextStepsCard from "../component/guidance/RecommendedNextStepsCard";
+import { careerGuidanceService } from "@/services/careerGuidanceService";
+
+/**
+ * CareerGuidance Page Component
+ * Renders the AI Career Copilot Guidance page with form input, real-time Gemini AI report generation,
+ * skill gap breakdown, learning roadmap, and profile sidebar recommendations.
+ */
+export default function CareerGuidance() {
+  const [guidanceData, setGuidanceData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Handle AI Guidance Form Submission
+  const handleGetGuidance = async (formData) => {
+    setIsLoading(true);
+    try {
+      const res = await careerGuidanceService.getCareerGuidanceResults(formData);
+      if (res?.data) {
+        setGuidanceData(res.data);
+      }
+    } catch (e) {
+      console.warn("Guidance generation notice:", e);
+    } finally {
+      setIsLoading(false);
+      window.scrollTo({ top: 420, behavior: "smooth" });
+    }
+  };
+
+  return (
+    <div className="min-w-[320px] bg-[#f8f9ff] text-[#101014] font-poppins min-h-screen flex flex-col justify-between select-none">
+      <div>
         <Header />
-       <div>
-        <div className="max-w-8xl mx-auto bg-[#F3F0FF] w-full flex flex-col md:flex-row w-full justify-between px-4 py-4 sm:px-6 sm:py-4 ">
-            <div className="">
-                <h1 className="text-xl sm:text-4xl font-bold">AI Career Guidance</h1>
-                <p className="text-sm text-base text-gray-600">Get personalized recommendation,skill insights,and setp-by-step guidance to achieve your goals</p>
+        <CareerGuidanceHero />
+
+        <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8 lg:px-8 space-y-6 sm:space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.8fr_1fr] gap-6 items-start">
+            <div className="space-y-6 w-full">
+              <GuidanceFormSection onGetGuidance={handleGetGuidance} />
+              <GuidanceResultsSection data={guidanceData} isLoading={isLoading} />
+              <RoadmapSnapshotSection />
             </div>
-            <div>
-                 <Image
-                    src="/Images/Robot1.png"
-                    alt="Robot"
-                    width={300}
-                    height={300}
-                    
-                    className="w-full h-auto"
-                  />
-            </div>
-        </div>
-        <div className="flex flex-col lg:flex-row  mt-4 gap-4 px-2 sm:px-4 items-stretch mb-4">
-               
-            <div className="w-full lg:flex-1 min-w-0">
-                 <LeftCareerGuidance />
-            </div>
-            <div className="w-full lg:w-[400px] lg:shrink-0">
-                {/* <RightCareerGuidance /> */}
-            </div>
-        </div>
-       </div> 
-     <Footer />
-      </>
-    )
+
+            <aside className="space-y-6 w-full">
+              <CareerProfileCard />
+              <PopularCareerPathsCard />
+              <RecommendedNextStepsCard />
+            </aside>
+          </div>
+        </main>
+      </div>
+
+      <Footer />
+    </div>
+  );
 }

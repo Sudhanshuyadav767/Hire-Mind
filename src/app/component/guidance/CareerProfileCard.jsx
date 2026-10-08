@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CheckCircle2, Circle, Star } from "lucide-react";
 
 export default function CareerProfileCard() {
@@ -16,9 +17,11 @@ export default function CareerProfileCard() {
         <h3 className="text-sm font-bold font-poppins text-[#1E2229]">
           Your Career Profile
         </h3>
-        <button className="text-[11px] font-bold text-[#2D24D0] hover:underline cursor-pointer">
-          Edit Profile
-        </button>
+        <Link href="/edit-profile?section=basic">
+          <button className="text-[11px] font-bold text-[#2D24D0] hover:underline cursor-pointer">
+            Edit Profile
+          </button>
+        </Link>
       </div>
 
       {/* Ring & Checklist */}
@@ -56,9 +59,18 @@ export default function CareerProfileCard() {
           <p className="text-[10px] text-slate-500 font-medium leading-tight">
             Get detailed insights, roadmap, and job recommendations
           </p>
-          <button className="bg-[#2D24D0] hover:bg-[#1e1c75] text-white px-4 py-1.5 rounded-xl text-[11px] font-bold shadow-xs transition active:scale-98 cursor-pointer">
-            Upgrade to Premium
-          </button>
+          <div className="flex items-center gap-2 pt-1">
+            <Link href="/pricing">
+              <button className="bg-[#2D24D0] hover:bg-[#1e1c75] text-white px-3 py-1.5 rounded-xl text-[11px] font-bold shadow-xs transition active:scale-98 cursor-pointer">
+                Upgrade to Premium
+              </button>
+            </Link>
+            <Link href="/verification">
+              <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-[11px] font-bold shadow-xs transition cursor-pointer">
+                Get KYC Badge
+              </button>
+            </Link>
+          </div>
         </div>
 
         <div className="w-10 h-10 rounded-2xl bg-amber-100/80 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0">
@@ -68,3 +80,4 @@ export default function CareerProfileCard() {
     </div>
   );
 }
+

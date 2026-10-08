@@ -13,6 +13,31 @@ export default function MatchedJobsList() {
   const [selectedJobForModal, setSelectedJobForModal] = useState(null);
   const [selectedMatchModal, setSelectedMatchModal] = useState(null);
 
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("hiremind_posted_jobs");
+      if (stored) {
+        try {
+          const rawLocal = JSON.parse(stored);
+          const mappedLocal = rawLocal.map((j) => ({
+            id: j.id,
+            jobtype: j.title,
+            companyname: j.company || j.companyName || "HireMind Enterprise Partner",
+            image: j.logo || "/logo/google.png",
+            location: j.location || "Bangalore, India",
+            package: j.salary || (j.minSalary ? `$${(j.minSalary / 1000).toFixed(0)}k - $${(j.maxSalary / 1000).toFixed(0)}k` : "$90k - $120k"),
+            experience: j.experienceLevel || "2-4Yrs",
+            matchScore: "94%",
+          }));
+          const mergedMap = new Map();
+          mappedLocal.forEach((item) => mergedMap.set(String(item.id), item));
+          jobmatching.forEach((item) => mergedMap.set(String(item.id || item.jobtype), item));
+          setJobs(Array.from(mergedMap.values()));
+        } catch (e) {}
+      }
+    }
+  }, []);
+
   const toggleBookmark = (idx) => {
     setBookmarkedIds((prev) =>
       prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]

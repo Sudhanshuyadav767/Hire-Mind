@@ -3,6 +3,8 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Header from '../component/common/Header';
+import { profileService } from '../../services/profileService';
+import { companyService } from '../../services/companyService';
 import { 
   ArrowLeft, 
   SlidersHorizontal, 
@@ -84,7 +86,9 @@ function EditProfileFormContent() {
       const savedUser = localStorage.getItem('hiremind_user');
       const savedData = localStorage.getItem('hiremind_user_profile');
       if (savedUser) {
-        try { userObj = JSON.parse(savedUser); } catch(e){}
+        try {
+          userObj = JSON.parse(savedUser);
+        } catch(e){}
       }
       if (savedData) {
         try {
@@ -96,6 +100,12 @@ function EditProfileFormContent() {
             lastName: parsed.lastName || userObj?.lastName || prev.lastName,
             email: parsed.email || userObj?.email || prev.email,
             username: parsed.username || userObj?.username || prev.username,
+            companyName: parsed.companyName || userObj?.companyName || prev.companyName,
+            roleTitle: parsed.roleTitle || userObj?.roleTitle || prev.roleTitle,
+            location: parsed.location || userObj?.location || prev.location,
+            website: parsed.website || userObj?.website || prev.website,
+            role: parsed.role || userObj?.role || userObj?.userType || prev.role,
+            isHrTeamMember: parsed.isHrTeamMember || userObj?.isHrTeamMember || prev.isHrTeamMember,
           }));
           if (parsed.avatarUrl) {
             setAvatarPreview(parsed.avatarUrl);
@@ -110,6 +120,12 @@ function EditProfileFormContent() {
           lastName: userObj.lastName || userObj.fullName?.split(' ').slice(1).join(' ') || '',
           email: userObj.email || '',
           username: userObj.username || userObj.email?.split('@')[0] || '',
+          companyName: userObj.companyName || '',
+          roleTitle: userObj.roleTitle || (userObj.isHrTeamMember ? 'HR Recruiter' : 'Recruiter'),
+          location: userObj.location || '',
+          website: userObj.website || '',
+          role: userObj.role || userObj.userType || '',
+          isHrTeamMember: Boolean(userObj.isHrTeamMember),
         }));
       }
     }
@@ -215,10 +231,44 @@ function EditProfileFormContent() {
     }));
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
+
+    try {
+      await profileService.updateProfile(profile);
+      if (isRecruiterAccount) {
+        await companyService.updateCompany({
+          name: profile.companyName,
+          location: profile.location,
+          website: profile.website,
+          description: profile.about,
+        });
+      }
+    } catch (err) {
+      console.warn('Backend profile update skipped or returned fallback:', err);
+    }
     if (typeof window !== 'undefined') {
       localStorage.setItem('hiremind_user_profile', JSON.stringify(profile));
+      const storedUser = localStorage.getItem('hiremind_user');
+      if (storedUser) {
+        try {
+          const user = JSON.parse(storedUser);
+          localStorage.setItem('hiremind_user', JSON.stringify({
+            ...user,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            username: profile.username,
+            email: profile.email,
+            avatarUrl: profile.avatarUrl,
+            companyName: profile.companyName,
+            roleTitle: profile.roleTitle,
+            location: profile.location,
+            website: profile.website,
+          }));
+        } catch (error) {
+          console.error('Unable to update the active user profile', error);
+        }
+      }
     }
     setSaveSuccess(true);
     
@@ -266,6 +316,51 @@ function EditProfileFormContent() {
   ];
 
   const isVisible = (secId) => activeSection === 'all' || activeSection === secId;
+  const normalizedAccountRole = String(profile.role || profile.userType || '').toLowerCase();
+  const isRecruiterAccount = normalizedAccountRole === 'recruiter' || normalizedAccountRole === 'hr' || Boolean(profile.isHrTeamMember);
+
+  if (isRecruiterAccount) {
+    return (
+      <div className="min-h-screen bg-[#f7f8fc] text-[#181924] font-sans pb-16">
+        <Header />
+        <div className="bg-white border-b border-[#e6e7f0] sticky top-[64px] sm:top-[80px] z-40 shadow-xs">
+          <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+            <button onClick={() => router.push('/profile')} className="p-1.5 rounded-full hover:bg-slate-100 transition text-[#333446] cursor-pointer flex items-center gap-1 text-xs font-semibold">
+              <ArrowLeft className="w-4 h-4" /><span className="hidden sm:inline">Back to Recruiter Profile</span>
+            </button>
+            <h1 className="text-base sm:text-lg font-bold text-[#151621] tracking-tight">Edit Recruiter Profile</h1>
+            <button type="button" onClick={() => router.push('/profile')} className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#463fe6] text-xs font-semibold text-[#463fe6] hover:bg-[#f2f2ff] transition cursor-pointer">
+              <SlidersHorizontal className="w-3.5 h-3.5" /><span>View Profile</span>
+            </button>
+          </div>
+        </div>
+
+        <main className="max-w-4xl mx-auto px-3 sm:px-6 pt-6">
+          {saveSuccess && <div className="mb-5 p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-800 text-sm font-semibold">Recruiter profile saved. Redirecting to your profile…</div>}
+          <form onSubmit={handleSave} className="bg-white border border-[#e4e5ee] rounded-[28px] p-5 sm:p-8 shadow-[0_8px_30px_rgba(30,34,70,0.06)] space-y-6">
+            <div className="border-b border-slate-100 pb-4">
+              <p className="text-[11px] font-extrabold uppercase tracking-wider text-[#463fe6]">Recruiter & HR Account</p>
+              <h2 className="text-xl font-bold text-[#141522] mt-1">Company and contact details</h2>
+              <p className="text-xs text-slate-500 mt-1">These details identify your hiring team to candidates.</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[["firstName", "First Name"], ["lastName", "Last Name"], ["email", "Work Email"], ["mobile", "Mobile Number"], ["roleTitle", "Recruiter / HR Designation"], ["companyName", "Company Name"], ["location", "Company Location"], ["website", "Company Website"]].map(([field, label]) => (
+                <div key={field} className={field === 'website' ? 'sm:col-span-2' : ''}>
+                  <label className="block text-xs font-bold text-[#232433] mb-1.5">{label}</label>
+                  <input type={field === 'email' ? 'email' : field === 'website' ? 'url' : 'text'} value={profile[field] || ''} onChange={(event) => handleInputChange(field, event.target.value)} placeholder={field === 'website' ? 'https://company.com' : ''} className="w-full h-12 px-4 rounded-xl border border-[#dcdce6] bg-white text-sm font-medium text-[#141520] outline-none focus:border-[#463fe6]" />
+                </div>
+              ))}
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-[#232433] mb-1.5">Hiring Team Summary</label>
+              <textarea rows={5} value={profile.about || ''} onChange={(event) => handleInputChange('about', event.target.value)} placeholder="Tell candidates about your company, hiring team, and open roles." className="w-full p-4 rounded-xl border border-[#dcdce6] bg-white text-sm font-medium text-[#141520] outline-none focus:border-[#463fe6] resize-y" />
+            </div>
+            <button type="submit" className="w-full py-3 rounded-xl bg-[#463fe6] text-white text-sm font-bold hover:bg-[#3932db] transition cursor-pointer">Save Recruiter Profile</button>
+          </form>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#f7f8fc] text-[#181924] font-sans pb-16">

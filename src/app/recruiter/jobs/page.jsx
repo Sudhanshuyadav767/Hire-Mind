@@ -8,32 +8,38 @@ import {
   Plus, 
   Briefcase, 
   Users, 
-  Eye, 
   Play, 
   Pause, 
   Trash2, 
   Pencil,
-  CheckCircle2, 
   AlertCircle,
   Search
 } from 'lucide-react';
 import { jobService } from '@/services/jobService';
 
+/**
+ * RecruiterJobsPage Component
+ * Manages recruiter job listings, creating new postings, updating salary and location,
+ * publishing/pausing jobs, and accessing applicant pipelines.
+ */
 export default function RecruiterJobsPage() {
   const [jobs, setJobs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Post Job Modal State
+  // Create Job Modal State
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     location: '',
     jobType: 'full_time',
+    keySkills: '',
+    minExperienceYears: 0,
+    maxExperienceYears: '',
     workMode: 'remote',
-    minSalary: 80000,
-    maxSalary: 120000,
+    minSalary: 800000,
+    maxSalary: 1500000,
   });
 
   // Edit Job Modal State
@@ -43,8 +49,8 @@ export default function RecruiterJobsPage() {
     description: '',
     location: '',
     jobType: 'full_time',
-    minSalary: 80000,
-    maxSalary: 120000,
+    minSalary: 800000,
+    maxSalary: 1500000,
   });
 
   const [errorMsg, setErrorMsg] = useState('');
@@ -53,7 +59,6 @@ export default function RecruiterJobsPage() {
     setIsLoading(true);
     let apiJobs = [];
 
-    // Read jobs strictly from Backend API
     try {
       let res;
       try {
@@ -70,8 +75,8 @@ export default function RecruiterJobsPage() {
           status: j.status || 'published',
           location: j.location || (j.isRemote ? 'Remote' : 'Hybrid'),
           jobType: j.jobType || 'full_time',
-          minSalary: j.minSalary || 80000,
-          maxSalary: j.maxSalary || 120000,
+          minSalary: j.minSalary || 800000,
+          maxSalary: j.maxSalary || 1500000,
           description: j.description || '',
           applicantCount: j.applicantCount || j.applicationsCount || 0,
           createdAt: j.createdAt ? new Date(j.createdAt).toLocaleDateString() : 'Today',
@@ -83,7 +88,6 @@ export default function RecruiterJobsPage() {
 
     setJobs(prev => {
       const mergedMap = new Map();
-      // Keep optimistic items already added in current session
       prev.forEach(j => mergedMap.set(String(j.id), j));
       apiJobs.forEach(j => mergedMap.set(String(j.id), j));
       return Array.from(mergedMap.values());
@@ -106,6 +110,11 @@ export default function RecruiterJobsPage() {
         description: formData.description,
         location: formData.location || 'Remote',
         jobType: formData.jobType || 'full_time',
+        keySkills: formData.keySkills,
+        minExperienceYears: Number(formData.minExperienceYears) || 0,
+        maxExperienceYears: formData.maxExperienceYears,
+        minSalary: formData.minSalary,
+        maxSalary: formData.maxSalary,
       });
 
       const createdJob = res?.data || {};
@@ -115,9 +124,12 @@ export default function RecruiterJobsPage() {
         status: createdJob.status || 'published',
         location: createdJob.location || formData.location || 'Remote',
         jobType: createdJob.jobType || formData.jobType || 'full_time',
-        minSalary: createdJob.minSalary || formData.minSalary || 80000,
-        maxSalary: createdJob.maxSalary || formData.maxSalary || 120000,
+        minSalary: createdJob.minSalary || formData.minSalary || 800000,
+        maxSalary: createdJob.maxSalary || formData.maxSalary || 1500000,
         description: createdJob.description || formData.description || '',
+        keySkills: formData.keySkills,
+        minExperienceYears: Number(formData.minExperienceYears) || 0,
+        maxExperienceYears: formData.maxExperienceYears,
         applicantCount: 0,
         createdAt: createdJob.createdAt ? new Date(createdJob.createdAt).toLocaleDateString() : 'Just now',
       };
@@ -129,8 +141,21 @@ export default function RecruiterJobsPage() {
         } catch (pubErr) {}
       }
 
-      // Optimistically push to UI state immediately
-      setJobs(prev => [newJobItem, ...prev.filter(j => String(j.id) !== String(newJobItem.id))]);
+      setJobs(prev => {
+        const updatedJobs = [newJobItem, ...prev.filter(j => String(j.id) !== String(newJobItem.id))];
+        if (typeof window !== 'undefined') {
+          const storedUser = localStorage.getItem('hiremind_user');
+          let userEmail = '';
+          if (storedUser) {
+            try { userEmail = JSON.parse(storedUser)?.email?.toLowerCase().trim() || ''; } catch (e) {}
+          }
+          const jobsKey = userEmail ? `hiremind_posted_jobs_${userEmail}` : 'hiremind_posted_jobs';
+          localStorage.setItem(jobsKey, JSON.stringify(updatedJobs));
+          localStorage.setItem('hiremind_posted_jobs', JSON.stringify(updatedJobs));
+          window.dispatchEvent(new Event('hiremind_jobs_updated'));
+        }
+        return updatedJobs;
+      });
 
       setShowCreateModal(false);
       setFormData({
@@ -138,15 +163,18 @@ export default function RecruiterJobsPage() {
         description: '',
         location: '',
         jobType: 'full_time',
+        keySkills: '',
+        minExperienceYears: 0,
+        maxExperienceYears: '',
         workMode: 'remote',
-        minSalary: 80000,
-        maxSalary: 120000,
+        minSalary: 800000,
+        maxSalary: 1500000,
       });
 
       await loadJobs();
     } catch (err) {
       console.error("Failed to create job:", err);
-      setErrorMsg(err.message || 'Failed to create job on server. Please check your credentials.');
+      setErrorMsg(err.message || 'Failed to create job on server.');
     }
   };
 
@@ -160,18 +188,33 @@ export default function RecruiterJobsPage() {
       description: editFormData.description,
       location: editFormData.location,
       jobType: editFormData.jobType,
-      minSalary: Number(editFormData.minSalary),
-      maxSalary: Number(editFormData.maxSalary),
+      minSalary: Number(editFormData.minSalary) || editingJob.minSalary,
+      maxSalary: Number(editFormData.maxSalary) || editingJob.maxSalary,
     };
 
     try {
-      await jobService.updateJob(editingJob.id, editFormData);
+      await jobService.updateJob(editingJob.id, {
+        title: editFormData.title,
+        description: editFormData.description,
+        location: editFormData.location,
+        jobType: editFormData.jobType,
+        minSalary: String(editFormData.minSalary),
+        maxSalary: String(editFormData.maxSalary),
+      });
     } catch (e) {}
 
     const updatedJobs = jobs.map(j => String(j.id) === String(editingJob.id) ? updatedJobObj : j);
     setJobs(updatedJobs);
     if (typeof window !== 'undefined') {
+      const storedUser = localStorage.getItem('hiremind_user');
+      let userEmail = '';
+      if (storedUser) {
+        try { userEmail = JSON.parse(storedUser)?.email?.toLowerCase().trim() || ''; } catch (err) {}
+      }
+      const jobsKey = userEmail ? `hiremind_posted_jobs_${userEmail}` : 'hiremind_posted_jobs';
+      localStorage.setItem(jobsKey, JSON.stringify(updatedJobs));
       localStorage.setItem('hiremind_posted_jobs', JSON.stringify(updatedJobs));
+      window.dispatchEvent(new Event('hiremind_jobs_updated'));
     }
     setEditingJob(null);
   };
@@ -211,8 +254,8 @@ export default function RecruiterJobsPage() {
       description: job.description || '',
       location: job.location || '',
       jobType: job.jobType || 'full_time',
-      minSalary: job.minSalary || 80000,
-      maxSalary: job.maxSalary || 120000,
+      minSalary: job.minSalary || 800000,
+      maxSalary: job.maxSalary || 1500000,
     });
   };
 
@@ -224,7 +267,6 @@ export default function RecruiterJobsPage() {
   return (
     <div className="min-h-screen bg-[#f8f9ff] font-poppins text-[#101014] flex flex-col justify-between">
       <div>
-        {/* Recruiter Dedicated Header */}
         <RecruiterHeader onOpenPostModal={() => setShowCreateModal(true)} />
 
         <main className="mx-auto max-w-6xl px-4 py-8 lg:px-8 space-y-6">
@@ -232,7 +274,7 @@ export default function RecruiterJobsPage() {
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-[#11121b]">Recruiter Job Postings Manager</h1>
               <p className="mt-1 text-xs sm:text-sm text-[#66687a]">
-                Publish new job openings, edit descriptions, pause listings, and view candidate applications.
+                Publish new job openings, edit descriptions, update salaries, pause listings, and view candidate applications.
               </p>
             </div>
 
@@ -290,6 +332,9 @@ export default function RecruiterJobsPage() {
                           {(job.status || 'published').toUpperCase()}
                         </span>
                         <span className="text-xs text-slate-400 font-medium">• {job.location || 'Remote'}</span>
+                        <span className="text-xs text-emerald-700 font-extrabold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
+                          ₹{job.minSalary ? (job.minSalary / 100000).toFixed(1) : '8.0'}L - ₹{job.maxSalary ? (job.maxSalary / 100000).toFixed(1) : '15.0'}L / yr
+                        </span>
                       </div>
                       <h3 className="text-base font-bold text-[#11121b]">{job.title}</h3>
                       <p className="text-xs text-slate-500 font-medium">Created: {job.createdAt || 'Recently'}</p>
@@ -306,8 +351,8 @@ export default function RecruiterJobsPage() {
 
                       <button
                         onClick={() => openEditModal(job)}
-                        className="p-2 rounded-xl border border-indigo-200 bg-indigo-50 text-[#463fe6] hover:bg-indigo-100"
-                        title="Edit Job Details"
+                        className="p-2 rounded-xl border border-indigo-200 bg-indigo-50 text-[#463fe6] hover:bg-indigo-100 cursor-pointer"
+                        title="Edit Job Details & Salary"
                       >
                         <Pencil size={14} />
                       </button>
@@ -315,7 +360,7 @@ export default function RecruiterJobsPage() {
                       {job.status !== 'published' ? (
                         <button
                           onClick={() => handleStatusChange(job.id, 'publish')}
-                          className="p-2 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
+                          className="p-2 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 cursor-pointer"
                           title="Publish Job"
                         >
                           <Play size={14} />
@@ -323,7 +368,7 @@ export default function RecruiterJobsPage() {
                       ) : (
                         <button
                           onClick={() => handleStatusChange(job.id, 'pause')}
-                          className="p-2 rounded-xl border border-amber-200 bg-amber-50 text-amber-600 hover:bg-amber-100"
+                          className="p-2 rounded-xl border border-amber-200 bg-amber-50 text-amber-600 hover:bg-amber-100 cursor-pointer"
                           title="Pause Job"
                         >
                           <Pause size={14} />
@@ -336,7 +381,7 @@ export default function RecruiterJobsPage() {
                             handleStatusChange(job.id, 'delete');
                           }
                         }}
-                        className="p-2 rounded-xl border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100"
+                        className="p-2 rounded-xl border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 cursor-pointer"
                         title="Delete Job"
                       >
                         <Trash2 size={14} />
@@ -388,6 +433,44 @@ export default function RecruiterJobsPage() {
                     />
                   </div>
 
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-[#11121b]">Min Salary (₹)</label>
+                      <input
+                        type="number"
+                        placeholder="e.g. 800000"
+                        value={formData.minSalary}
+                        onChange={(e) => setFormData({ ...formData, minSalary: e.target.value })}
+                        className="mt-1 h-10 w-full rounded-xl border border-slate-200 px-3 text-xs outline-none focus:border-[#463fe6]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-[#11121b]">Max Salary (₹)</label>
+                      <input
+                        type="number"
+                        placeholder="e.g. 1500000"
+                        value={formData.maxSalary}
+                        onChange={(e) => setFormData({ ...formData, maxSalary: e.target.value })}
+                        className="mt-1 h-10 w-full rounded-xl border border-slate-200 px-3 text-xs outline-none focus:border-[#463fe6]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-[#11121b]">Experience Required (Years)</label>
+                      <div className="mt-1 grid grid-cols-2 gap-2">
+                        <input type="number" min="0" placeholder="Min" value={formData.minExperienceYears} onChange={(e) => setFormData({ ...formData, minExperienceYears: e.target.value })} className="h-10 w-full rounded-xl border border-slate-200 px-3 text-xs outline-none focus:border-[#463fe6]" />
+                        <input type="number" min="0" placeholder="Max" value={formData.maxExperienceYears} onChange={(e) => setFormData({ ...formData, maxExperienceYears: e.target.value })} className="h-10 w-full rounded-xl border border-slate-200 px-3 text-xs outline-none focus:border-[#463fe6]" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-[#11121b]">Key Skills</label>
+                      <input type="text" placeholder="React, Node.js, TypeScript" value={formData.keySkills} onChange={(e) => setFormData({ ...formData, keySkills: e.target.value })} className="mt-1 h-10 w-full rounded-xl border border-slate-200 px-3 text-xs outline-none focus:border-[#463fe6]" />
+                      <p className="mt-1 text-[10px] text-slate-400">Separate skills with commas.</p>
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-xs font-bold text-[#11121b]">Job Description *</label>
                     <textarea
@@ -431,7 +514,7 @@ export default function RecruiterJobsPage() {
 
                 <form onSubmit={handleUpdateJob} className="space-y-3">
                   <div>
-                    <label className="block text-xs font-bold text-[#11121b]">Job Title</label>
+                    <label className="block text-xs font-bold text-[#11121b]">Job Title *</label>
                     <input
                       type="text"
                       required
@@ -441,19 +524,58 @@ export default function RecruiterJobsPage() {
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-bold text-[#11121b]">Location</label>
-                    <input
-                      type="text"
-                      required
-                      value={editFormData.location}
-                      onChange={(e) => setEditFormData({ ...editFormData, location: e.target.value })}
-                      className="mt-1 h-10 w-full rounded-xl border border-slate-200 px-3 text-xs outline-none focus:border-[#463fe6]"
-                    />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-[#11121b]">Location *</label>
+                      <input
+                        type="text"
+                        required
+                        value={editFormData.location}
+                        onChange={(e) => setEditFormData({ ...editFormData, location: e.target.value })}
+                        className="mt-1 h-10 w-full rounded-xl border border-slate-200 px-3 text-xs outline-none focus:border-[#463fe6]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-[#11121b]">Job Type</label>
+                      <select
+                        value={editFormData.jobType}
+                        onChange={(e) => setEditFormData({ ...editFormData, jobType: e.target.value })}
+                        className="mt-1 h-10 w-full rounded-xl border border-slate-200 px-3 text-xs font-semibold text-slate-700 outline-none focus:border-[#463fe6]"
+                      >
+                        <option value="full_time">Full Time</option>
+                        <option value="part_time">Part Time</option>
+                        <option value="remote">Remote</option>
+                        <option value="internship">Internship</option>
+                        <option value="contract">Contract / Freelance</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-[#11121b]">Min Salary (₹)</label>
+                      <input
+                        type="number"
+                        placeholder="e.g. 800000"
+                        value={editFormData.minSalary}
+                        onChange={(e) => setEditFormData({ ...editFormData, minSalary: e.target.value })}
+                        className="mt-1 h-10 w-full rounded-xl border border-slate-200 px-3 text-xs outline-none focus:border-[#463fe6]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-[#11121b]">Max Salary (₹)</label>
+                      <input
+                        type="number"
+                        placeholder="e.g. 1500000"
+                        value={editFormData.maxSalary}
+                        onChange={(e) => setEditFormData({ ...editFormData, maxSalary: e.target.value })}
+                        className="mt-1 h-10 w-full rounded-xl border border-slate-200 px-3 text-xs outline-none focus:border-[#463fe6]"
+                      />
+                    </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-[#11121b]">Job Description</label>
+                    <label className="block text-xs font-bold text-[#11121b]">Job Description *</label>
                     <textarea
                       rows={4}
                       required

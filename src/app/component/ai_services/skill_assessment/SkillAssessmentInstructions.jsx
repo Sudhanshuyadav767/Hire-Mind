@@ -17,7 +17,8 @@ export default function SkillAssessmentInstructions({
   selectedLevel,
   selectedCategory,
   setCurrentStep,
-  handleBeginAssessment
+  handleBeginAssessment,
+  isLoading
 }) {
   return (
     <main className="mx-auto max-w-7xl px-3 sm:px-4 py-6 sm:py-8 space-y-5 sm:space-y-6 text-left">
@@ -124,17 +125,28 @@ export default function SkillAssessmentInstructions({
 
           <div className="flex items-center justify-between border-t border-slate-100 pt-4">
             <button 
+              disabled={isLoading}
               onClick={() => setCurrentStep("dashboard")}
-              className="border border-[#cbd5e1] hover:bg-slate-50 text-[#5e637d] font-bold text-[10px] sm:text-xs px-5 py-2.5 rounded-xl transition cursor-pointer"
+              className="border border-[#cbd5e1] hover:bg-slate-50 text-[#5e637d] font-bold text-[10px] sm:text-xs px-5 py-2.5 rounded-xl transition cursor-pointer disabled:opacity-50"
             >
               Back
             </button>
             <button 
+              disabled={isLoading}
               onClick={handleBeginAssessment}
-              className="bg-[#2D24D0] hover:bg-[#1f1a8c] text-white font-bold text-[10px] sm:text-xs px-5 py-3 rounded-xl transition flex items-center justify-center gap-1 cursor-pointer shadow-sm"
+              className="bg-[#2D24D0] hover:bg-[#1f1a8c] text-white font-bold text-[10px] sm:text-xs px-5 py-3 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm disabled:opacity-60"
             >
-              <span>Start Assessment</span>
-              <ArrowRight size={12} />
+              {isLoading ? (
+                <>
+                  <Sparkles size={14} className="animate-spin" />
+                  <span>Generating AI Questions...</span>
+                </>
+              ) : (
+                <>
+                  <span>Start Assessment</span>
+                  <ArrowRight size={12} />
+                </>
+              )}
             </button>
           </div>
         </div>

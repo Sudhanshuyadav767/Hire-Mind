@@ -23,6 +23,10 @@ export const clearTokens = () => {
   localStorage.removeItem('hiremind_user');
 };
 
+function isLocalDemoSession(token) {
+  return token?.startsWith('hr_demo_access_') || token?.startsWith('local_demo_access_');
+}
+
 let isRefreshing = false;
 let refreshSubscribers = [];
 
@@ -58,7 +62,9 @@ export async function apiClient(endpoint, options = {}) {
   });
 
   // Handle 401 Unauthorized for token refresh
-  if (response.status === 401 && !options._retry && getRefreshToken()) {
+  // Local HR accounts are intentionally browser-only until a backend account exists.
+  // A failed API request must not erase their valid local session.
+  if (response.status === 401 && !isLocalDemoSession(token) && !options._retry && getRefreshToken()) {
     options._retry = true;
 
     if (!isRefreshing) {

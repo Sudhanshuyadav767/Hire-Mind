@@ -30,43 +30,43 @@ export default function GuidanceResultsSection({ data, isLoading }) {
   }
 
   const role = data || {
-    topRole: "Data Scientist",
-    matchScore: 92,
-    description: "Data Scientists analyze complex data to help organizations make better decisions and build data-driven solutions.",
+    topRole: "Full Stack Software Engineer",
+    matchScore: 95,
+    description: "Full Stack Engineers architect and build modern end-to-end web applications, scalable microservices, and cloud infrastructure.",
     whyMatch: [
-      "Strong match with your skills in Python, SQL and data analysis",
-      "High demand in the job market with great growth potential",
-      "Aligns with your interest in Technology and Problem Solving",
-      "Average salary range: ₹10-₹22 LPA"
+      "Exceptional alignment with your expertise in JavaScript, React, Next.js & REST APIs",
+      "Highest callback rate across tech startups & global MNCs",
+      "End-to-end impact from UI components to database architecture",
+      "Average salary range: ₹12-₹26 LPA"
     ],
     secondaryRoles: [
-      { title: "AI Research Engineer", match: 88, salary: "₹14-₹26 LPA" },
-      { title: "Machine Learning Specialist", match: 85, salary: "₹12-₹20 LPA" }
+      { title: "Cloud Solutions Architect", match: 89, salary: "₹16-₹30 LPA" },
+      { title: "Backend Microservices Engineer", match: 86, salary: "₹12-₹22 LPA" }
     ],
     skills: {
-      mastered: ["Python", "SQL Querying", "Data Analysis", "Statistics"],
+      mastered: ["React & Next.js", "JavaScript / TypeScript", "RESTful APIs", "HTML5 & Tailwind"],
       missing: [
-        { name: "PyTorch & Deep Learning", progress: 45 },
-        { name: "Cloud MLOps (AWS/GCP)", progress: 30 },
-        { name: "Distributed Data (Spark)", progress: 35 }
+        { name: "Docker & Containerization", progress: 40 },
+        { name: "System Design & Microservices", progress: 50 },
+        { name: "CI/CD & Cloud Infrastructure", progress: 45 }
       ]
     },
     roadmap: [
-      { num: 1, title: "Foundation", duration: "0-3 Months", desc: "Learn Python, Statistics, and SQL basics" },
-      { num: 2, title: "Core Skills", duration: "3-6 Months", desc: "Master Machine Learning, Feature Engineering" },
-      { num: 3, title: "Advanced Skills", duration: "6-12 Months", desc: "Deep Learning, PyTorch & MLOps Pipelines" },
-      { num: 4, title: "Build & Apply", duration: "12+ Months", desc: "Work on Production ML projects and apply for top roles" }
+      { num: 1, title: "Modern Frontend", duration: "0-2 Months", desc: "Next.js App Router, React 19 & State Management" },
+      { num: 2, title: "Scalable Backend", duration: "2-4 Months", desc: "Fastify/Node.js, PostgreSQL, Drizzle ORM & Auth" },
+      { num: 3, title: "DevOps & Cloud", duration: "4-8 Months", desc: "Docker, Kubernetes, AWS Deployment & Monitoring" },
+      { num: 4, title: "System Architecture", duration: "8+ Months", desc: "Distributed Systems & Capstone Project" }
     ],
     jobRoles: [
-      { title: "Senior Data Scientist", company: "Google", location: "Bangalore, KA", salary: "₹18-28 LPA", tags: ["Python", "SQL", "MLOps"] },
-      { title: "AI Research Engineer", company: "Microsoft", location: "Remote", salary: "₹16-24 LPA", tags: ["PyTorch", "NLP", "Deep Learning"] },
-      { title: "ML Specialist", company: "Amazon", location: "Hyderabad, TS", salary: "₹15-22 LPA", tags: ["AWS Sagemaker", "Python", "Docker"] }
+      { title: "Senior Full Stack Engineer", company: "Google", location: "Bangalore, KA", salary: "₹18-30 LPA", tags: ["Next.js", "Node.js", "PostgreSQL"] },
+      { title: "React Developer", company: "Meta", location: "Remote", salary: "₹16-25 LPA", tags: ["React", "TypeScript", "GraphQL"] },
+      { title: "Backend Engineer", company: "Uber", location: "Gurgaon, HR", salary: "₹15-24 LPA", tags: ["Node.js", "Microservices", "Docker"] }
     ],
     insights: {
-      marketDemand: "High (+34% YoY Growth)",
-      hiringLocations: "Bangalore, Remote, Hyderabad, Gurgaon",
-      salaryRange: "₹8 LPA (Entry) to ₹35+ LPA (Lead/Principal)",
-      hiringSpeed: "Fast (Average 2-3 weeks time-to-hire)"
+      marketDemand: "Critical (+42% YoY Growth)",
+      hiringLocations: "Bangalore, Remote, Pune, Delhi NCR",
+      salaryRange: "₹7 LPA (Entry) to ₹40+ LPA (Lead/Staff)",
+      hiringSpeed: "Immediate (High priority hiring)"
     }
   };
 
@@ -303,27 +303,42 @@ export default function GuidanceResultsSection({ data, isLoading }) {
             <span className="text-[10px] font-bold text-slate-400 uppercase">Market Growth Trend</span>
             <p className="text-sm font-bold text-[#1E2229] flex items-center gap-1.5">
               <TrendingUp size={16} className="text-emerald-600" />
-              <span>{role.insights?.marketDemand}</span>
+              <span>
+                {typeof role.insights?.marketDemand === 'string'
+                  ? role.insights.marketDemand
+                  : 'High (+42% YoY Growth)'}
+              </span>
             </p>
           </div>
 
           <div className="border border-slate-200/80 rounded-2xl p-4 bg-slate-50/50 space-y-1">
             <span className="text-[10px] font-bold text-slate-400 uppercase">Top Hiring Hubs</span>
-            <p className="text-sm font-bold text-[#1E2229]">{role.insights?.hiringLocations}</p>
+            <p className="text-sm font-bold text-[#1E2229]">
+              {Array.isArray(role.insights?.hiringLocations)
+                ? role.insights.hiringLocations.join(", ")
+                : role.insights?.hiringLocations || 'Bangalore, Remote, Gurgaon'}
+            </p>
           </div>
 
           <div className="border border-slate-200/80 rounded-2xl p-4 bg-slate-50/50 space-y-1">
             <span className="text-[10px] font-bold text-slate-400 uppercase">Salary Benchmark</span>
-            <p className="text-sm font-bold text-emerald-700">{role.insights?.salaryRange}</p>
+            <p className="text-sm font-bold text-emerald-700">
+              {typeof role.insights?.salaryRange === 'object'
+                ? `${role.insights.salaryRange.entryLevel || ''} to ${role.insights.salaryRange.seniorLevel || ''}`
+                : role.insights?.salaryRange || '₹8 LPA to ₹35+ LPA'}
+            </p>
           </div>
 
           <div className="border border-slate-200/80 rounded-2xl p-4 bg-slate-50/50 space-y-1">
             <span className="text-[10px] font-bold text-slate-400 uppercase">Recruitment Speed</span>
-            <p className="text-sm font-bold text-[#1E2229]">{role.insights?.hiringSpeed}</p>
+            <p className="text-sm font-bold text-[#1E2229]">
+              {typeof role.insights?.hiringSpeed === 'string'
+                ? role.insights.hiringSpeed
+                : 'Fast (Immediate hiring priority)'}
+            </p>
           </div>
         </div>
       )}
     </div>
   );
 }
-

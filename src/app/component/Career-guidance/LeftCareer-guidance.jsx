@@ -1,231 +1,416 @@
-import { question } from "@/Data/data";
-import Link from "next/link";
-import Image from "next/image";
-import { Check, ArrowRight } from "lucide-react";
-export default function LeftCareerguidance() {
-  return (
-<>
-      <div className="border rounded-xl shadow-sm px-4 py-4 sm:px-6 py-6 mt-4">
-        <h2 className="text-xl  sm:text-2xl font-bold">What would you like guidance on?</h2>
+"use client";
 
-        <p className="text-sm sm:text-base text-gray-600">
-          Tell us about yourself and let our AI suggest the best career path for you
+import React, { useState } from "react";
+import Link from "next/link";
+import { Check, ArrowRight, Sparkles, Loader2 } from "lucide-react";
+import { careerGuidanceService } from "@/services/careerGuidanceService";
+
+export default function LeftCareerguidance() {
+  const [interest, setInterest] = useState("Software Engineering & Development");
+  const [education, setEducation] = useState("Bachelor's Degree (B.Tech / B.E. / B.Sc / BCA)");
+  const [experienceField, setExperienceField] = useState("IT & Software Development");
+  const [experienceYears, setExperienceYears] = useState("1-3 Years");
+  const [additionalInfo, setAdditionalInfo] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("report"); // 'report' | 'skills' | 'roadmap' | 'insights' | 'courses'
+  const [guidanceData, setGuidanceData] = useState(null);
+  const [subData, setSubData] = useState(null);
+
+  // Trigger full personalized career guidance report
+  const handleGetGuidance = async () => {
+    setIsLoading(true);
+    try {
+      const payload = {
+        targetRole: additionalInfo?.trim() || interest,
+        interests: interest,
+        field: experienceField,
+        education,
+        experience: experienceYears,
+        additionalInfo: additionalInfo?.trim(),
+        preferredLocation: "India / Remote"
+      };
+
+      const res = await careerGuidanceService.getCareerGuidanceReport(payload);
+      if (res?.data) {
+        setGuidanceData(res.data);
+        setActiveTab("report");
+      }
+    } catch (err) {
+      console.error("Guidance fetch error:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Switch tabs & fetch sub-resource endpoints (2.3 Skills, 2.4 Roadmap, 2.5 Insights, 2.6 Courses)
+  const handleTabChange = async (tabKey) => {
+    setActiveTab(tabKey);
+    const payload = {
+      targetRole: guidanceData?.topRole || additionalInfo?.trim() || interest,
+      interests: interest,
+      field: experienceField,
+      education,
+      experience: experienceYears,
+      additionalInfo: additionalInfo?.trim(),
+      preferredLocation: "India / Remote"
+    };
+
+    setIsLoading(true);
+
+    try {
+      if (tabKey === "skills") {
+        const res = await careerGuidanceService.getSkillAnalysis(payload);
+        if (res?.data) setSubData(res.data);
+      } else if (tabKey === "roadmap") {
+        const res = await careerGuidanceService.getLearningRoadmap(payload);
+        if (res?.data) setSubData(res.data);
+      } else if (tabKey === "insights") {
+        const res = await careerGuidanceService.getMarketInsights(payload);
+        if (res?.data) setSubData(res.data);
+      } else if (tabKey === "courses") {
+        const courseSearch = additionalInfo?.trim() || interest;
+        const res = await careerGuidanceService.getRecommendedCourses(courseSearch, 6);
+        if (res?.data) setSubData(res.data);
+      }
+    } catch (err) {
+      console.error("Subtab fetch error:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const activeData = guidanceData || {
+    topRole: "Full Stack Software Engineer",
+    matchScore: 95,
+    description: "Full Stack Engineers architect and build modern end-to-end web applications, scalable backend microservices, and cloud infrastructure.",
+    whyMatch: [
+      "Exceptional alignment with your expertise in JavaScript, React, Next.js & REST APIs",
+      "Highest callback rate across tech startups & global MNCs",
+      "Matches your problem solving and software development interest",
+      "Average salary range: ₹12-₹26 LPA"
+    ],
+    roadmap: [
+      { num: 1, title: "Modern Frontend", duration: "0-2 Months", desc: "Next.js App Router, SSR, Server Components & State Mgmt" },
+      { num: 2, title: "Scalable Backend", duration: "2-4 Months", desc: "Fastify / Node.js, PostgreSQL ORM, Redis & Auth" },
+      { num: 3, title: "DevOps & Cloud", duration: "4-8 Months", desc: "Docker, Kubernetes, AWS Deployment & Monitoring" },
+      { num: 4, title: "System Architecture", duration: "8+ Months", desc: "Distributed Systems, Caching & Capstone Application" }
+    ],
+    insights: {
+      marketDemand: "Critical (+42% YoY Growth)",
+      hiringLocations: "Bangalore, Remote, Pune, Delhi NCR",
+      salaryRange: "₹7 LPA (Entry) to ₹40+ LPA (Lead/Staff)",
+      hiringSpeed: "Immediate (High priority hiring)"
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      
+      {/* Input Form Section */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-2xs">
+        <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-indigo-600" />
+          What would you like guidance on?
+        </h2>
+
+        <p className="text-xs sm:text-sm text-slate-500 mt-1 mb-5">
+          Tell us about your background and let our AI suggest your personalized career path & roadmap.
         </p>
 
-        <div>
-            {question.map((item, index) => (
-          <div key={index}
-          className="flex flex-col md:flex-row items-center justify-between"
-          >
-            
-            <div className="space-y-2">
-              <h3  className="text-xl  sm:text-xl font-medium">What are your main interests?</h3>
-
-              <select 
-              className="border rounded-xl shadow-sm px-4 py-4 w-full"
-              >
-                <option className="text-gray-600 items-center">{item.interest}</option>
-                
-                
-              </select>
-
-              <h3  className="text-xl  sm:text-xl font-medium">What is your highest education level?</h3>
-
-              <select
-              
-              className="border rounded-xl shadow-sm px-4 py-4 w-full"
-              >
-                <option>{item.educationlevel}</option>
-              </select>
-            </div>
-
-            <div
-            
-              className="space-y-2 px-4 py-4"
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-slate-700">What are your main interests?</label>
+            <select 
+              value={interest}
+              onChange={(e) => setInterest(e.target.value)}
+              className="border border-slate-300 rounded-xl px-3 py-2.5 w-full text-xs sm:text-sm text-slate-800 bg-white focus:border-indigo-500 outline-none"
             >
-              <h3  className="text-xl  sm:text-xl font-medium">
-                Which field describes your current/previous experience?
-              </h3>
+              <option value="Software Engineering & Development">Software Engineering & Development</option>
+              <option value="Data Science & Artificial Intelligence">Data Science & Artificial Intelligence</option>
+              <option value="UI/UX & Product Design">UI/UX & Product Design</option>
+              <option value="Product Management & Business Strategy">Product Management & Business Strategy</option>
+            </select>
+          </div>
 
-              <select
-                 
-              className="border rounded-xl shadow-sm px-4 py-4 w-full">
-                <option>{item.currentexperience}</option>
-              </select>
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-slate-700">Which field describes your experience?</label>
+            <select
+              value={experienceField}
+              onChange={(e) => setExperienceField(e.target.value)}
+              className="border border-slate-300 rounded-xl px-3 py-2.5 w-full text-xs sm:text-sm text-slate-800 bg-white focus:border-indigo-500 outline-none"
+            >
+              <option value="IT & Software Development">IT & Software Development</option>
+              <option value="Design & Creative Arts">Design & Creative Arts</option>
+              <option value="Business & Finance">Business & Finance</option>
+              <option value="Engineering & Operations">Engineering & Operations</option>
+            </select>
+          </div>
 
-              <h3 className="text-xl  sm:text-xl font-medium">How many years of experience do you have?</h3>
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-slate-700">Highest Education Level</label>
+            <select
+              value={education}
+              onChange={(e) => setEducation(e.target.value)}
+              className="border border-slate-300 rounded-xl px-3 py-2.5 w-full text-xs sm:text-sm text-slate-800 bg-white focus:border-indigo-500 outline-none"
+            >
+              <option value="Bachelor's Degree (B.Tech / B.E. / B.Sc / BCA)">Bachelor's Degree (B.Tech / B.E. / B.Sc / BCA)</option>
+              <option value="Master's Degree (M.Tech / M.Sc / MCA / MBA)">Master's Degree (M.Tech / M.Sc / MCA / MBA)</option>
+              <option value="High School / Diploma">High School / Diploma</option>
+            </select>
+          </div>
 
-              <select
-              
-              className="border rounded-xl shadow-sm px-4 py-4 w-full"
-              >
-                <option>{item.experienceyear}</option>
-              </select>
-            </div>
-<div>
-     
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-slate-700">Years of Experience</label>
+            <select
+              value={experienceYears}
+              onChange={(e) => setExperienceYears(e.target.value)}
+              className="border border-slate-300 rounded-xl px-3 py-2.5 w-full text-xs sm:text-sm text-slate-800 bg-white focus:border-indigo-500 outline-none"
+            >
+              <option value="Fresher / 0 Years">Fresher / 0 Years</option>
+              <option value="1-3 Years">1-3 Years</option>
+              <option value="3-5 Years">3-5 Years</option>
+              <option value="5+ Years">5+ Years</option>
+            </select>
+          </div>
+
         </div>
-       
+
+        <div className="mt-4 space-y-1.5">
+          <label className="text-xs font-semibold text-slate-700">Any other information / Specific Goal</label>
+          <input
+            type="text"
+            value={additionalInfo}
+            onChange={(e) => setAdditionalInfo(e.target.value)}
+            placeholder="e.g. editing apps, mobile app development, cybersecurity, AI video generation..."
+            className="border border-slate-300 rounded-xl px-3 py-2.5 w-full text-xs sm:text-sm text-slate-800 bg-white focus:border-indigo-500 outline-none focus:ring-1 focus:ring-indigo-500"
+          />
+        </div>
+
+        <div className="flex items-center gap-4 mt-5">
+          <button 
+            onClick={handleGetGuidance}
+            disabled={isLoading}
+            className="rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm px-5 py-2.5 shadow-2xs transition-all flex items-center gap-2 cursor-pointer"
+          >
+            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+            <span>Get AI Guidance</span>
+          </button>
+
+          <button 
+            onClick={() => {
+              setAdditionalInfo("");
+              setGuidanceData(null);
+            }}
+            className="text-xs font-medium text-slate-500 hover:text-slate-700 cursor-pointer"
+          >
+            Reset Form
+          </button>
+        </div>
+
+      </div>
+
+      {/* Guidance Results Display Section */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-2xs space-y-5">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-100 pb-3">
+          <div>
+            <h2 className="sm:text-lg text-base font-bold text-slate-900">Your AI Career Guidance Report</h2>
+            <p className="text-xs text-indigo-600 font-medium mt-0.5">Custom generated for your target role & specific goals</p>
+          </div>
+
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full shrink-0">
+            <Check className="w-3.5 h-3.5" /> {activeData.matchScore || 95}% Role Match
+          </span>
+        </div>
+
+        {/* Subtab Navigation (2.1 Report, 2.3 Skills, 2.4 Roadmap, 2.5 Insights, 2.6 Courses) */}
+        <div className="flex flex-wrap gap-2 border-b border-slate-200 pb-2">
+          <button
+            onClick={() => handleTabChange("report")}
+            className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
+              activeTab === "report" ? "bg-indigo-600 text-white shadow-2xs" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            🎯 Recommended Path
+          </button>
+          <button
+            onClick={() => handleTabChange("skills")}
+            className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
+              activeTab === "skills" ? "bg-indigo-600 text-white shadow-2xs" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            ⚡ Skill Gap Analysis
+          </button>
+          <button
+            onClick={() => handleTabChange("roadmap")}
+            className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
+              activeTab === "roadmap" ? "bg-indigo-600 text-white shadow-2xs" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            🗺️ Learning Roadmap
+          </button>
+          <button
+            onClick={() => handleTabChange("insights")}
+            className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
+              activeTab === "insights" ? "bg-indigo-600 text-white shadow-2xs" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            📊 Market Insights
+          </button>
+          <button
+            onClick={() => handleTabChange("courses")}
+            className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
+              activeTab === "courses" ? "bg-indigo-600 text-white shadow-2xs" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            📚 Recommended Courses
+          </button>
+        </div>
+
+        {/* Tab Content Display */}
+        {isLoading ? (
+          <div className="py-12 flex flex-col items-center justify-center text-slate-500 text-xs">
+            <Loader2 className="w-6 h-6 animate-spin text-indigo-600 mb-2" />
+            <span>Analyzing career metrics & user focus with HireMind AI...</span>
+          </div>
+        ) : (
+          <div>
+            {/* 2.1 Main Report */}
+            {activeTab === "report" && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start pt-2">
+                <div className="space-y-4">
+                  <div className="bg-indigo-50/70 border border-indigo-100 rounded-xl p-4">
+                    <p className="text-xs font-medium text-indigo-600 uppercase tracking-wider">Top Career Match</p>
+                    <h3 className="text-lg font-bold text-slate-900 mt-1">{activeData.topRole}</h3>
+                    <p className="text-xs text-slate-600 mt-2 leading-relaxed">{activeData.description}</p>
+                  </div>
+
+                  <Link href="/ai-services/Career-Chatbot">
+                    <button className="w-full text-center text-xs font-semibold text-indigo-600 bg-indigo-50 border border-indigo-200 py-2.5 rounded-xl hover:bg-indigo-100 transition-all flex items-center justify-center gap-1.5">
+                      <span>Chat with AI Advisor About This Role</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </Link>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-indigo-600" />
+                    Why this is a great match?
+                  </h4>
+                  <ul className="space-y-2">
+                    {activeData.whyMatch?.map((reason, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-xs text-slate-700">
+                        <span className="w-4 h-4 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-[10px]">✓</span>
+                        <span>{reason}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {/* 2.3 Skill Gap Analysis */}
+            {activeTab === "skills" && (
+              <div className="space-y-4 pt-2">
+                <h4 className="text-sm font-bold text-slate-900">AI Skill Gap Analysis for {activeData.topRole}</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-emerald-50/60 border border-emerald-200 rounded-xl p-4">
+                    <p className="text-xs font-bold text-emerald-800 mb-2">✅ Mastered Skills</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(subData?.masteredSkills || activeData?.skills?.mastered || ["Core Languages", "Frameworks"]).map((sk, idx) => (
+                        <span key={idx} className="text-xs bg-white text-emerald-700 font-semibold px-2.5 py-1 rounded-md border border-emerald-200">
+                          {sk}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-amber-50/60 border border-amber-200 rounded-xl p-4">
+                    <p className="text-xs font-bold text-amber-800 mb-2">⚡ Priority Skill Gaps</p>
+                    <div className="space-y-2">
+                      {(subData?.missingSkills || activeData?.skills?.missing || []).map((sk, idx) => (
+                        <div key={idx} className="text-xs bg-white p-2 rounded-lg border border-amber-200 flex items-center justify-between">
+                          <span className="font-semibold text-slate-800">{sk.name || sk}</span>
+                          <span className="text-[10px] text-amber-700 font-bold bg-amber-100 px-2 py-0.5 rounded">
+                            {sk.priority ? `${sk.priority} Priority` : 'Skill Gap'}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 2.4 Roadmap */}
+            {activeTab === "roadmap" && (
+              <div className="space-y-4 pt-2">
+                <h4 className="text-sm font-bold text-slate-900">Step-by-Step Learning Roadmap</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {(subData?.milestones || activeData.roadmap || []).map((m, idx) => (
+                    <div key={idx} className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2 flex flex-col justify-between">
+                      <div>
+                        <div className="w-6 h-6 rounded-full bg-indigo-600 text-white font-bold text-xs flex items-center justify-center mb-2">
+                          {m.num || m.step || idx + 1}
+                        </div>
+                        <h5 className="font-bold text-xs text-slate-900">{m.title}</h5>
+                        <p className="text-[10px] text-indigo-600 font-semibold mt-0.5">{m.duration}</p>
+                        <p className="text-[11px] text-slate-600 mt-2 leading-relaxed">{m.desc || m.topics?.join(", ")}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 2.5 Market Insights */}
+            {activeTab === "insights" && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                  <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Market Growth Trend</p>
+                  <p className="text-sm font-bold text-indigo-600 mt-1">{subData?.marketDemand || activeData.insights?.marketDemand}</p>
+                </div>
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                  <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Expected Salary Range</p>
+                  <p className="text-sm font-bold text-emerald-600 mt-1">{subData?.salaryRange || activeData.insights?.salaryRange}</p>
+                </div>
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                  <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Top Hiring Locations</p>
+                  <p className="text-xs font-semibold text-slate-800 mt-1">
+                    {Array.isArray(subData?.topHiringLocations) ? subData.topHiringLocations.join(", ") : activeData.insights?.hiringLocations}
+                  </p>
+                </div>
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                  <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Hiring Velocity</p>
+                  <p className="text-xs font-semibold text-slate-800 mt-1">{subData?.hiringSpeed || activeData.insights?.hiringSpeed}</p>
+                </div>
+              </div>
+            )}
+
+            {/* 2.6 Recommended Courses */}
+            {activeTab === "courses" && (
+              <div className="space-y-3 pt-2">
+                <h4 className="text-sm font-bold text-slate-900">Recommended Courses for Skill Gaps</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {(subData?.courses || []).map((c) => (
+                    <div key={c.id} className="border border-slate-200 rounded-xl p-3.5 bg-slate-50 hover:bg-white transition-all space-y-2">
+                      <span className="text-[10px] bg-indigo-100 text-indigo-700 font-bold px-2 py-0.5 rounded">{c.provider}</span>
+                      <h5 className="font-bold text-xs text-slate-900 leading-snug">{c.title}</h5>
+                      <div className="flex justify-between items-center text-[10px] text-slate-500 pt-2 border-t border-slate-200">
+                        <span>{c.level}</span>
+                        <span>⭐ {c.rating}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
     </div>
-     ))}
-    
-            <h2 className="text-xl  sm:text-xl font-bold">Any other information</h2>
-
-            <input
-              type="text"
-              placeholder="Write message"
-              className="border shadow-sm w-full rounded-xl px-4 py-4 mt-4"
-            />
-
-            <div className="flex flex-col md:flex-row items-center mt-6 gap-8">
-              <button className="boder rounded-xl bg-indigo-600 shadow-sm text-white px-4 py-4">Get AI Guidance</button>
-              <p className="text-gray-600">Reset</p>
-            </div>
-  
-         </div>
-    
-      </div>
-      <div className="border rounded-xl shadow-sm px-4 px-4 sm:px-6 sm:py-4 mt-6">
-        <div className="flex flex-col md:flex-row justify-between ">
-        <h2 className="sm:text-xl text-lg font-bold">Your AI Career Guidance Results</h2>
-        <p className="text-green-600 sm:text-base text-sm">Generate just for you</p>
-        </div>
-        <div className="flex flex-col md:flex-row justify-between mt-2">
-            <p className="text-blue-600">Recommended Paths</p>
-            <p>Skill Gap Analysis</p>
-            <p>Roadmap</p>
-            <p>Top Job Roles</p>
-            <p>Industry Insights</p>
-        </div>
-        <hr className="text-gray-300 mt-4"/>
-        <div className="flex flex-col md:flex-row justify-between mt-4 gap-4">
-            <div className="">
-                <Image 
-                src='/AI-Icon/Career Guidance.jpeg'
-                alt=""
-                width={60}
-                height={60}
-                className=" rounded-xl bg-blue-300"
-                />
-            </div>
-            <div className="space-y-4">
-                <p>Top career Match</p>
-                <span className="flex justify-between">
-                <h2 className="sm:text-xl text-lg font-bold">Data Scientist</h2>
-                 <p className="text-green-600">92% Match</p>
-            </span>
-            <p>Data Scientist analyze complex
-                to help organization make better<br />
-                decision and build data-driven  <br />solutions
-
-            </p>
-        
-<Link href="/Career-Guidance/DataScientist">
-  <button className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-blue-600 transition-all duration-200 hover:border-blue-300 hover:bg-blue-100 hover:shadow-sm active:scale-[0.98]">
-    Explore Career Path ➜
-  </button>
-</Link>
-
-
-            </div>
-            
-            <div className="space-y-4">
-                <h3 className="sm:text-xl text-lg font-bold">✨ Why this is a great match?</h3>
-                <span className="flex items-center  gap-2">
-                    <span className="w-4 h-4 flex items-center  bg-green-500 rounded-full">
-                    <Check className="w-4 h-4 text-white"/>  
-                    </span>
-                <span>Strong match with your skills in python ,SQL analysis</span>
-                </span>
-                 <span className="flex items-center  gap-2">
-                    <span className="w-4 h-4 flex items-center justify-center bg-green-500 rounded-full">
-                    <Check className="w-4 h-4 text-white"/>  
-                    </span>
-                <span>High demand in the job market with great growth potential</span>
-                </span>
-                 <span className="flex items-center  gap-2">
-                    <span className="w-4 h-4 flex items-center justify-center bg-green-500 rounded-full">
-                    <Check className="w-4 h-4 text-white"/>  
-                    </span>
-                <span>Aligns with your interest in technology and problem Solving</span>
-                </span>
-                 <span className="flex items-center  gap-2">
-                    <span className="w-4 h-4 flex items-center justify-center bg-green-500 rounded-full">
-                    <Check className="w-4 h-4 text-white"/>  
-                    </span>
-                <span>Average salary range ₹8-18 LpA</span>
-                </span>
-                
-                <div className="flex justify-between items-center gap-2 mb-2">
-                    
-                    <div>Confidence Score</div>
-                   <div className="w-full bg-gray-200 rounded-full h-3">
-  <div
-    className="bg-blue-600 h-3 rounded-full"
-    style={{ width: "92%" }}
-  ></div>
-</div>
-                    <div>
-                 <p>92%</p>
-
-                </div>
-                 </div>
-                 </div>
-       </div>
-
-      </div>
-      <div className="border rounded-xl shadow-sm px-4 py-4 sm:px-6 sm:py-6 mt-8">
-        <h2 className="sm:text-xl text-lg font-bold">
-            Recommanded Roadmap Sanpshot
-        </h2>
-        <div className="flex flex-col md:flex-row mt-4">
-            <div className="flex gap-2">
-                <span className="w-8 h-8 border rounded-full bg-blue-600 flex items-center justify-center">
-            <span className="text-white text-sm font-semibold">1</span>
-                </span>
-                <span>
-                  <h3 className="font-semibold text-lg">Foundation</h3>
-                  <p>0-3 Months learn Python,Statics,and SQL basics</p>
-                </span>
-                </div>
-                  {/* <ArrowRight className="text-gray-500 w-12 h-12" /> */}
-                  {/* <span className="text-4xl justify-center">→</span> */}
-        
-  <ArrowRight className="mx-2 w-16 h-8" />
-
-           
-            <div  className="flex gap-2">
-              <span className="w-8 h-8 border rounded-full bg-blue-600 flex items-center justify-center">
-          <span className="text-white text-sm font-semibold">2</span>
-              </span>
-              <span>
-                <h3 className="font-semibold text-lg">Core Skills</h3>
-                <p>3-6 Months Learn Machine Learning,Data Analysis</p>
-               
-              </span>
-            </div>
-            <ArrowRight className="mx-2 w-16 h-8" />
-            <div  className="flex gap-2">
-             <span className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
-  <span className="text-white text-sm font-semibold">3</span>
-</span>
-              <span>
-                <h3 className="font-semibold text-lg">Advanced Skills</h3>
-                <p>6-12 Months Deep Learning,Data visualization</p>
-              </span>
-            </div>
-            <ArrowRight className="mx-2 w-16 h-8" />
-             <div  className="flex gap-2">
-              <span className="w-8 h-8  rounded-full bg-blue-600 flex items-center justify-center">
-              <span className="text-white text-sm font-semibold">4</span>
-              </span>
-              <span>
-                <h3 className="font-semibold text-lg">Build &Apply</h3>
-                <p>12+Months Work on Projects and apply for roles</p>
-              </span>
-            </div>
-        </div>
-      </div>
-    </>
   );
 }

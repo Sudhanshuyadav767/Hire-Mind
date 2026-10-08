@@ -68,7 +68,7 @@ export function useJobsFilter() {
           company: j.company?.name || j.organization?.name || j.organizationName || j.companyName || "HireMind Enterprise Partner",
           logo: j.company?.logoUrl || j.organization?.logoUrl || j.organizationLogoUrl || "/logo/google.png",
           location: j.location || (j.isRemote ? "Remote" : "Bangalore"),
-          salary: j.minSalary ? `$${(j.minSalary / 1000).toFixed(0)}k - $${(j.maxSalary / 1000).toFixed(0)}k` : "$90k - $120k",
+          salary: j.minSalary ? `₹${(j.minSalary / 1000).toFixed(0)}k - ₹${(j.maxSalary / 1000).toFixed(0)}k` : "₹90k - ₹120k",
           type: formatJobType(j.jobType),
           experience: j.experienceLevel || "2-4Yrs",
           experienceFilter: formatExperienceFilter(j.experienceLevel),
@@ -84,8 +84,47 @@ export function useJobsFilter() {
       console.warn("Backend job fetch notice:", e);
     }
 
-    setRawJobs(backendMapped);
-    setJobs(filterAlgorithm(backendMapped));
+    // Also read recruiter-posted jobs from localStorage
+    let localJobs = [];
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("hiremind_posted_jobs");
+      if (stored) {
+        try {
+          const rawLocal = JSON.parse(stored);
+          localJobs = rawLocal.map((j) => ({
+            id: j.id,
+            title: j.title,
+            company: j.company || j.companyName || "HireMind Enterprise Partner",
+            logo: j.logo || "/logo/google.png",
+            location: j.location || "Bangalore, India",
+            salary: j.salary || (j.minSalary ? `₹${(j.minSalary / 1000).toFixed(0)}k - ₹${(j.maxSalary / 1000).toFixed(0)}k` : "₹90k - ₹120k"),
+            type: formatJobType(j.jobType),
+            experience: j.experienceLevel || "2-4Yrs",
+            experienceFilter: formatExperienceFilter(j.experienceLevel),
+            tags: j.skills || ["React", "Node.js", "REST API"],
+            description: j.description || "",
+            isFeatured: true,
+            isUrgent: false,
+            status: j.status || 'published',
+            posted: j.createdAt || "Just now",
+          }));
+        } catch (e) {}
+      }
+    }
+
+    // Merge backend jobs and local posted jobs without duplicates
+    const mergedMap = new Map();
+    localJobs.forEach((j) => mergedMap.set(String(j.id), j));
+    backendMapped.forEach((j) => mergedMap.set(String(j.id), j));
+
+    const allCombinedJobs = Array.from(mergedMap.values()).filter(
+      (job) => {
+        const st = String(job.status || 'active').toLowerCase();
+        return st === 'active' || st === 'published' || st === 'draft' || st === 'open';
+      }
+    );
+    setRawJobs(allCombinedJobs);
+    setJobs(filterAlgorithm(allCombinedJobs));
     setIsLoading(false);
   };
 

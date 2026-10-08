@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { 
@@ -25,7 +25,10 @@ import {
   Plus,
   ArrowLeftRight,
   Bell,
-  Check
+  Check,
+  Mic,
+  Bot,
+  Lightbulb
 } from "lucide-react";
 
 import { useAuth } from '../../../context/AuthContext';
@@ -34,13 +37,19 @@ import { notificationService } from '@/services/notificationService';
 
 const Header = ({ onOpenPostModal }) => {
   const pathname = usePathname();
-  const { user, isAuthenticated, logout } = useAuth();
+  const router = useRouter();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [expandedMobileItem, setExpandedMobileItem] = useState(null);
 
   const [notifications, setNotifications] = useState([]);
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (isAuthenticated || Boolean(user)) {
@@ -54,8 +63,26 @@ const Header = ({ onOpenPostModal }) => {
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const isLoggedIn = isAuthenticated || Boolean(user);
-  const isRecruiterPage = pathname ? pathname.startsWith('/recruiter') : false;
+  const isLoggedIn = mounted && (isAuthenticated || Boolean(user) || (typeof window !== 'undefined' && !!localStorage.getItem('hiremind_user')));
+  const userRole = String(
+    user?.role || 
+    user?.userType || 
+    (typeof window !== 'undefined' ? localStorage.getItem('hiremind_user_role') : '') || 
+    ''
+  ).toLowerCase();
+  const isRecruiterUser = userRole === 'recruiter' || userRole === 'hr' || userRole === 'company_owner' || Boolean(user?.isHrTeamMember);
+  const isRecruiterPage = isRecruiterUser || Boolean(pathname?.startsWith('/recruiter'));
+
+  useEffect(() => {
+    if (isLoading || !pathname || !mounted) return;
+
+    const hasStoredUser = typeof window !== 'undefined' && !!localStorage.getItem('hiremind_user');
+    const userIsLoggedIn = isAuthenticated || Boolean(user) || hasStoredUser;
+
+    if (pathname.startsWith('/recruiter') && !userIsLoggedIn) {
+      router.replace('/login');
+    }
+  }, [isLoading, isAuthenticated, user, pathname, router, mounted]);
 
   const candidateNavItems = [
     { 
@@ -83,21 +110,71 @@ const Header = ({ onOpenPostModal }) => {
       isMegaMenu: true,
       submenuGroups: [
         {
-          title: "AI Career Tools",
+          title: "AI CAREER TOOLS",
           items: [
-            { href: '/resume-review', label: 'AI Resume Review', desc: 'Instant ATS score & improvement tips', icon: FileCheck },
-            { href: '/Job-Matching', label: 'AI Job Matching', desc: 'Smart AI matching for target roles', icon: Target },
-            { href: '/guidance', label: 'AI Career Guidance', desc: 'Step-by-step career path roadmap', icon: Compass },
-            { href: '/ai-services/skill-assessment', label: 'Skill Assessment', desc: 'Interactive skill tests & scoring', icon: Award }
+            { 
+              href: '/resume-review', 
+              label: 'AI Resume Review', 
+              desc: 'Instant ATS score & resume feedback', 
+              icon: FileCheck,
+              subPages: ['Upload Resume', 'Resume Report', 'AI Resume Summary']
+            },
+            { 
+              href: '/Job-Matching', 
+              label: 'AI Job Matching', 
+              desc: 'Smart AI matching for relevant jobs', 
+              icon: Target,
+              subPages: ['Top Matched Jobs', 'AI Assistant', 'Direct Apply']
+            },
+            { 
+              href: '/guidance', 
+              label: 'AI Career Guidance', 
+              desc: 'Step-by-step career guidance', 
+              icon: Compass,
+              subPages: ['Personalized Guidance', 'Edit Profile', 'Explore Paths']
+            },
+            { 
+              href: '/Mock-Interview', 
+              label: 'AI Mock Interview', 
+              desc: 'Practice real interview scenarios', 
+              icon: Mic,
+              subPages: ['Real Scenarios', 'Start Interview', 'Download Report']
+            },
+            { 
+              href: '/ai-services/skill-assessment', 
+              label: 'Skill Assessment', 
+              desc: 'AI-powered skill evaluation', 
+              icon: Award,
+              subPages: ['AI Evaluation', 'Start Assessment', 'Assessment Results']
+            },
+            { 
+              href: '/ai-services/Career-Chatbot', 
+              label: 'AI Career Chatbot', 
+              desc: 'Get instant career assistance', 
+              icon: Bot,
+              subPages: ['Chat with AI', 'Instant Q&A', 'Consultation']
+            }
           ]
         },
         {
-          title: "AI Learning & Courses",
+          title: "AI LEARNING & COURSES",
           items: [
-            { href: '/ai-services/courses', label: 'Explore Courses', desc: 'Skill development video modules', icon: BookOpen },
-            { href: '/ai-services/courses/python-for-data-science', label: 'Python for Data Science', desc: 'Complete interactive learning course', icon: Code2 },
-            { href: '/ai-services/courses/generate', label: 'Generate Learning Path', desc: 'Custom AI-generated curriculum', icon: Sparkles },
-            { href: '/ai-services', label: 'AI Hub Overview', desc: 'Explore all AI services & tools', icon: Layers }
+            { 
+              href: '/ai-services/courses', 
+              label: 'Explore Courses', 
+              desc: 'Skill development & learning videos', 
+              icon: BookOpen,
+              subPages: ['Start Learning Courses', 'Search Learning Courses', 'Achievements']
+            },
+            { 
+              href: '/ai-services/Learning-Recommendation', 
+              label: 'Learning Recommendations', 
+              desc: 'Personalized courses based on your goals', 
+              icon: Lightbulb,
+              subPages: ['Personalized Recommendations', 'Recommended for You', 'Top Courses']
+            },
+
+
           ]
         }
       ] 
@@ -215,16 +292,16 @@ const Header = ({ onOpenPostModal }) => {
                 {item.isMegaMenu ? (
                   /* Mega Menu for AI Services */
                   <div 
-                    className={`absolute left-1/2 top-full -translate-x-1/2 mt-0.5 w-[520px] rounded-2xl border border-slate-200/80 bg-white/98 backdrop-blur-md p-4 shadow-2xl transition-all duration-200 ease-out transform origin-top ${
+                    className={`absolute -left-28 top-full mt-1 w-[680px] max-w-[90vw] rounded-2xl border border-slate-200/90 bg-white/98 backdrop-blur-xl p-5 shadow-2xl transition-all duration-200 ease-out transform origin-top-left ${
                       isOpen 
                         ? 'visible opacity-100 scale-100 translate-y-0 pointer-events-auto' 
                         : 'invisible opacity-0 scale-95 -translate-y-2 pointer-events-none'
                     }`}
                   >
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-[1.3fr_1fr] gap-5">
                       {item.submenuGroups?.map((group, groupIdx) => (
                         <div key={groupIdx} className="space-y-2">
-                          <h4 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 px-2.5">
+                          <h4 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600 px-2.5">
                             {group.title}
                           </h4>
                           <div className="space-y-1">
@@ -235,7 +312,7 @@ const Header = ({ onOpenPostModal }) => {
                                   key={subIdx} 
                                   href={subItem.href} 
                                   onClick={() => setActiveDropdown(null)}
-                                  className="flex items-start gap-2.5 p-2 rounded-xl hover:bg-[#f0f2ff] group/item transition-all duration-150 text-left"
+                                  className="flex items-start gap-2.5 p-2 rounded-xl hover:bg-[#f0f2ff] border border-transparent hover:border-indigo-100 group/item transition-all duration-150 text-left"
                                 >
                                   <div className="p-1.5 rounded-lg bg-blue-50 text-[#2D24D0] group-hover/item:bg-[#2D24D0] group-hover/item:text-white transition-colors duration-150 shrink-0 mt-0.5 border border-blue-100">
                                     <IconComponent size={14} />
@@ -523,7 +600,10 @@ const Header = ({ onOpenPostModal }) => {
                                 onClick={() => setIsMobileMenuOpen(false)} 
                                 className="block py-1 text-[11px] font-semibold text-slate-600 hover:text-[#2D24D0]"
                               >
-                                • {sub.label}
+                                <div className="space-y-0.5">
+                                  <div className="font-bold text-slate-800">{sub.label}</div>
+                                  <div className="text-[10px] text-slate-400 font-normal">{sub.desc}</div>
+                                </div>
                               </Link>
                             ))}
                           </div>

@@ -3,269 +3,248 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Header from "../../component/common/Header";
 import Footer from "../../component/common/Footer";
+
+// Sub-components
 import SkillAssessmentDashboard from "../../component/ai_services/skill_assessment/SkillAssessmentDashboard";
 import SkillAssessmentInstructions from "../../component/ai_services/skill_assessment/SkillAssessmentInstructions";
 import SkillAssessmentTest from "../../component/ai_services/skill_assessment/SkillAssessmentTest";
 import SkillAssessmentReview from "../../component/ai_services/skill_assessment/SkillAssessmentReview";
 import SkillAssessmentResults from "../../component/ai_services/skill_assessment/SkillAssessmentResults";
 
-// Mock Data
-const categories = [
-  "Programming & Development",
-  "Design & Creative",
-  "Marketing & Sales",
-  "Finance & Accounting",
-  "Business & Management"
-];
+// Configuration & Service
+import { categories, skillsByCategory, popularSkills, fallbackMockQuestions } from "../../component/ai_services/skill_assessment/skillAssessmentConfig";
+import { skillAssessmentService } from "@/services/skillAssessmentService";
+import { useAuth } from "@/context/AuthContext";
 
-const skillsByCategory = {
-  "Programming & Development": ["JavaScript", "Python", "React", "SQL Database", "Node.js", "HTML & CSS"],
-  "Design & Creative": ["UI/UX Design", "Figma Prototyping", "Adobe Illustrator", "Graphic Design"],
-  "Marketing & Sales": ["Digital Marketing", "SEO Optimization", "Content Strategy", "Social Media"],
-  "Finance & Accounting": ["Financial Analysis", "Excel Modeling", "Bookkeeping", "Tax Auditing"],
-  "Business & Management": ["Agile Project Management", "Business Strategy", "Product Management", "Team Leadership"]
-};
-
-const popularSkills = [
-  { id: 1, name: "JavaScript", questions: "12 Questions", level: "Intermediate", category: "Programming & Development", logo: "JS", bg: "bg-amber-100 text-amber-600 border-amber-200" },
-  { id: 2, name: "Python", questions: "12 Questions", level: "Intermediate", category: "Programming & Development", logo: "PY", bg: "bg-blue-100 text-blue-600 border-blue-200" },
-  { id: 3, name: "React", questions: "12 Questions", level: "Advanced", category: "Programming & Development", logo: "RE", bg: "bg-sky-100 text-sky-600 border-sky-200" },
-  { id: 4, name: "SQL Database", questions: "12 Questions", level: "Beginner", category: "Programming & Development", logo: "SQL", bg: "bg-emerald-100 text-emerald-600 border-emerald-200" }
-];
-
-const recentAssessments = [
-  { id: 1, name: "JavaScript", level: "Intermediate", date: "5 May 2026", score: 87, status: "Good" },
-  { id: 2, name: "React", level: "Advanced", date: "2 May 2026", score: 92, status: "Excellent" },
-  { id: 3, name: "Python", level: "Intermediate", date: "28 April 2026", score: 65, status: "Good" },
-  { id: 4, name: "UI/UX Design", level: "Intermediate", date: "15 April 2026", score: 45, status: "Needs Improvement" }
-];
-
-const mockQuestions = [
-  {
-    id: 1,
-    question: "Which of the following is the correct way to declare a variable in JavaScript?",
-    options: [
-      { key: "A", text: "variable x = 10;" },
-      { key: "B", text: "var x = 10;" },
-      { key: "C", text: "declare x = 10;" },
-      { key: "D", text: "x := 10;" }
-    ],
-    correct: "B",
-    category: "Variables & Data Types"
-  },
-  {
-    id: 2,
-    question: "Which keyword is used to declare a block-scoped variable in JavaScript?",
-    options: [
-      { key: "A", text: "var" },
-      { key: "B", text: "let" },
-      { key: "C", text: "const" },
-      { key: "D", text: "Both let and const" }
-    ],
-    correct: "D",
-    category: "Variables & Data Types"
-  },
-  {
-    id: 3,
-    question: "Which of the following is used to add a comment in JavaScript?",
-    options: [
-      { key: "A", text: "// This is a comment" },
-      { key: "B", text: "<!-- This is a comment -->" },
-      { key: "C", text: "# This is a comment" },
-      { key: "D", text: "Both A and B" }
-    ],
-    correct: "A",
-    category: "Best Practices"
-  },
-  {
-    id: 4,
-    question: "Which operator is used to compare both value and type?",
-    options: [
-      { key: "A", text: "==" },
-      { key: "B", text: "===" },
-      { key: "C", text: "=" },
-      { key: "D", text: "!=" }
-    ],
-    correct: "B",
-    category: "ES6+ Features"
-  },
-  {
-    id: 5,
-    question: "What will be the output of: console.log(typeof null);",
-    options: [
-      { key: "A", text: "\"null\"" },
-      { key: "B", text: "\"undefined\"" },
-      { key: "C", text: "\"object\"" },
-      { key: "D", text: "\"number\"" }
-    ],
-    correct: "C",
-    category: "Variables & Data Types"
-  }
-];
-
+/**
+ * SkillAssessmentPage Component
+ * Main container controlling candidate AI Skill Assessment stages:
+ * - dashboard: Select skill, category & difficulty level
+ * - instructions: Review test guidelines & duration
+ * - test: Timed interactive MCQ question answering
+ * - review: Final question status check before submission
+ * - results: Comprehensive AI performance report & concept breakdown
+ */
 export default function SkillAssessmentPage() {
+  const { user, isAuthenticated } = useAuth();
+  
+  // Navigation & selection state
   const [currentStep, setCurrentStep] = useState("dashboard");
   const [selectedCategory, setSelectedCategory] = useState("Programming & Development");
   const [selectedSkill, setSelectedSkill] = useState("JavaScript");
   const [selectedLevel, setSelectedLevel] = useState("Intermediate");
 
+  // Assessment session state
+  const [assessmentId, setAssessmentId] = useState(null);
+  const [questions, setQuestions] = useState([]);
+  const [assessmentResult, setAssessmentResult] = useState(null);
+  const [userAssessmentsList, setUserAssessmentsList] = useState([]);
+
+  // Test execution state
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [markedForReview, setMarkedForReview] = useState({});
-  const [timeLeft, setTimeLeft] = useState(1884);
+  const [timeLeft, setTimeLeft] = useState(1800); // 30 min default timer
   const [isTimerRunning, setIsTimerRunning] = useState(false);
-  const [resultsScore, setResultsScore] = useState(87);
+  const [resultsScore, setResultsScore] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [reviewPage, setReviewPage] = useState(1);
-  const itemsPerReviewPage = 5;
-
-  const handleCategoryChange = (catName) => {
-    setSelectedCategory(catName);
-    const list = skillsByCategory[catName] || [];
-    if (list.length > 0) {
-      setSelectedSkill(list[0]);
-    }
-  };
-
-  const handleFinishTest = useCallback(() => {
-    setIsTimerRunning(false);
-    let correctCount = 0;
-    mockQuestions.forEach((q) => {
-      if (answers[q.id] === q.correct) {
-        correctCount++;
-      }
-    });
-    const finalScore = Math.round((correctCount / mockQuestions.length) * 100);
-    setResultsScore(finalScore);
-    setCurrentStep("results");
-  }, [answers]);
-
+  // Load user's previous assessment history on mount
   useEffect(() => {
-    if (!isTimerRunning) return;
-    if (timeLeft <= 0) {
-      handleFinishTest();
-      return;
+    if (isAuthenticated) {
+      skillAssessmentService.getMyAssessments()
+        .then(res => res?.data && setUserAssessmentsList(res.data))
+        .catch(() => {});
     }
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [isTimerRunning, timeLeft, handleFinishTest]);
+  }, [isAuthenticated]);
 
-  const formatTime = (seconds) => {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
-  };
-
-  const handleStartTestFlow = (skillName) => {
-    setSelectedSkill(skillName || "JavaScript");
+  // Handle Assessment Start
+  const handleStartAssessment = async () => {
     setCurrentStep("instructions");
+    try {
+      const res = await skillAssessmentService.startAssessment({
+        skill: selectedSkill,
+        category: selectedCategory,
+        experienceLevel: selectedLevel,
+        numQuestions: 10
+      });
+
+      if (res?.data) {
+        setAssessmentId(res.data.assessmentId);
+        if (res.data.questions && res.data.questions.length > 0) {
+          setQuestions(res.data.questions);
+        } else {
+          setQuestions(fallbackMockQuestions);
+        }
+      } else {
+        setQuestions(fallbackMockQuestions);
+      }
+    } catch (err) {
+      console.warn("Notice: Using fallback questions:", err);
+      setQuestions(fallbackMockQuestions);
+    }
   };
 
-  const handleBeginAssessment = () => {
-    setCurrentStep("assessment");
-    setTimeLeft(1884);
-    setIsTimerRunning(true);
+  // Begin test timer
+  const handleConfirmStartTest = () => {
+    setCurrentStep("test");
     setCurrentQuestionIndex(0);
     setAnswers({});
     setMarkedForReview({});
+    setTimeLeft(1800);
+    setIsTimerRunning(true);
   };
 
-  const handleOptionSelect = (optionKey) => {
-    setAnswers({
-      ...answers,
-      [mockQuestions[currentQuestionIndex].id]: optionKey
-    });
+  // Submit test answers & calculate AI evaluation
+  const handleSubmitAssessment = useCallback(async () => {
+    setIsTimerRunning(false);
+    setIsSubmitting(true);
+    setCurrentStep("results");
+
+    try {
+      const activeQuestions = questions.length > 0 ? questions : fallbackMockQuestions;
+      
+      const res = await skillAssessmentService.submitAnswers({
+        assessmentId: assessmentId || `asm_${Date.now()}`,
+        answers,
+        questions: activeQuestions,
+        skill: selectedSkill,
+        experienceLevel: selectedLevel
+      });
+
+      if (res?.data) {
+        setAssessmentResult(res.data);
+        setResultsScore(res.data.percentage ?? 0);
+      } else {
+        let correctCount = 0;
+        activeQuestions.forEach(q => {
+          if (answers[q.id] === q.correct) correctCount++;
+        });
+        const score = Math.round((correctCount / activeQuestions.length) * 100);
+        setResultsScore(score);
+      }
+    } catch (err) {
+      console.warn("Notice: Local result calculation:", err);
+      const activeQuestions = questions.length > 0 ? questions : fallbackMockQuestions;
+      let correctCount = 0;
+      activeQuestions.forEach(q => {
+        if (answers[q.id] === q.correct) correctCount++;
+      });
+      const score = Math.round((correctCount / activeQuestions.length) * 100);
+      setResultsScore(score);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [questions, answers, assessmentId, selectedSkill, selectedLevel]);
+
+  // Timer Countdown Effect
+  useEffect(() => {
+    let interval = null;
+    if (isTimerRunning && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft(prev => prev - 1);
+      }, 1000);
+    } else if (timeLeft === 0 && isTimerRunning) {
+      setIsTimerRunning(false);
+      handleSubmitAssessment();
+    }
+    return () => clearInterval(interval);
+  }, [isTimerRunning, timeLeft, handleSubmitAssessment]);
+
+  // Option selection
+  const handleSelectOption = (questionId, optionKey) => {
+    setAnswers(prev => ({
+      ...prev,
+      [questionId]: optionKey
+    }));
   };
 
-  const handleClearAnswer = () => {
-    const newAnswers = { ...answers };
-    delete newAnswers[mockQuestions[currentQuestionIndex].id];
-    setAnswers(newAnswers);
+  // Toggle mark for review
+  const handleToggleMarkForReview = (questionId) => {
+    setMarkedForReview(prev => ({
+      ...prev,
+      [questionId]: !prev[questionId]
+    }));
   };
 
-  const handleToggleReview = () => {
-    const qId = mockQuestions[currentQuestionIndex].id;
-    setMarkedForReview({
-      ...markedForReview,
-      [qId]: !markedForReview[qId]
-    });
-  };
-
-  const countAnswered = () => Object.keys(answers).length;
+  const activeQuestionsList = questions.length > 0 ? questions : fallbackMockQuestions;
 
   return (
-    <div className="min-w-[320px] bg-[#f8f9ff] text-[#1E2229] font-poppins min-h-screen flex flex-col justify-between select-none">
+    <div className="bg-[#f8f9ff] text-[#1E2229] font-poppins min-h-screen flex flex-col justify-between select-none">
       <div>
         <Header />
 
+        {/* Step 1: Dashboard */}
         {currentStep === "dashboard" && (
           <SkillAssessmentDashboard
             categories={categories}
-            skillsByCategory={skillsByCategory}
-            popularSkills={popularSkills}
-            recentAssessments={recentAssessments}
             selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            skillsByCategory={skillsByCategory}
             selectedSkill={selectedSkill}
-            selectedLevel={selectedLevel}
-            handleCategoryChange={handleCategoryChange}
             setSelectedSkill={setSelectedSkill}
+            selectedLevel={selectedLevel}
             setSelectedLevel={setSelectedLevel}
-            handleStartTestFlow={handleStartTestFlow}
+            popularSkills={popularSkills}
+            onStartAssessment={handleStartAssessment}
+            userAssessmentsList={userAssessmentsList}
           />
         )}
 
+        {/* Step 2: Instructions */}
         {currentStep === "instructions" && (
           <SkillAssessmentInstructions
             selectedSkill={selectedSkill}
             selectedLevel={selectedLevel}
             selectedCategory={selectedCategory}
+            onConfirmStart={handleConfirmStartTest}
             setCurrentStep={setCurrentStep}
-            handleBeginAssessment={handleBeginAssessment}
           />
         )}
 
-        {currentStep === "assessment" && (
+        {/* Step 3: Test Execution */}
+        {currentStep === "test" && (
           <SkillAssessmentTest
             selectedSkill={selectedSkill}
             selectedLevel={selectedLevel}
-            mockQuestions={mockQuestions}
+            mockQuestions={activeQuestionsList}
             currentQuestionIndex={currentQuestionIndex}
             setCurrentQuestionIndex={setCurrentQuestionIndex}
             answers={answers}
+            setAnswers={setAnswers}
             markedForReview={markedForReview}
+            setMarkedForReview={setMarkedForReview}
             timeLeft={timeLeft}
-            formatTime={formatTime}
-            handleOptionSelect={handleOptionSelect}
-            handleClearAnswer={handleClearAnswer}
-            handleToggleReview={handleToggleReview}
-            countAnswered={countAnswered}
+            onSelectOption={handleSelectOption}
+            onToggleReview={handleToggleMarkForReview}
             setCurrentStep={setCurrentStep}
           />
         )}
 
+        {/* Step 4: Question Review */}
         {currentStep === "review" && (
           <SkillAssessmentReview
             selectedSkill={selectedSkill}
             selectedLevel={selectedLevel}
-            mockQuestions={mockQuestions}
+            mockQuestions={activeQuestionsList}
             answers={answers}
             markedForReview={markedForReview}
-            reviewPage={reviewPage}
-            setReviewPage={setReviewPage}
-            itemsPerReviewPage={itemsPerReviewPage}
+            timeLeft={timeLeft}
+            setCurrentQuestionIndex={setCurrentQuestionIndex}
             setCurrentStep={setCurrentStep}
-            handleFinishTest={handleFinishTest}
+            onSubmitAssessment={handleSubmitAssessment}
+            isSubmitting={isSubmitting}
           />
         )}
 
+        {/* Step 5: AI Performance Results */}
         {currentStep === "results" && (
           <SkillAssessmentResults
             selectedSkill={selectedSkill}
             selectedLevel={selectedLevel}
             resultsScore={resultsScore}
-            mockQuestions={mockQuestions}
+            assessmentResult={assessmentResult}
+            mockQuestions={activeQuestionsList}
             answers={answers}
             setCurrentStep={setCurrentStep}
           />

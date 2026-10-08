@@ -3,14 +3,19 @@
 import React, { useState, useEffect } from 'react';
 import Header from '@/app/component/common/Header';
 import Footer from '@/app/component/common/Footer';
-import { Briefcase, Calendar, Clock, CheckCircle, AlertCircle, XCircle, ArrowRight, ShieldCheck, FileText } from 'lucide-react';
+import ApplicationCard from '@/app/component/applications/ApplicationCard';
+import ApplicationTimelineModal from '@/app/component/applications/ApplicationTimelineModal';
+import ApplicationEmptyState from '@/app/component/applications/ApplicationEmptyState';
 import { applicationService } from '@/services/applicationService';
 
+/**
+ * ApplicationsPage Component
+ * Container for candidate submitted job applications list and timeline tracking.
+ */
 export default function ApplicationsPage() {
   const [applications, setApplications] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTimeline, setSelectedTimeline] = useState(null);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     async function loadApplications() {
@@ -34,7 +39,6 @@ export default function ApplicationsPage() {
         console.warn("Backend applications fetch notice (using local applications):", e);
       }
 
-      // Merge API list and local list without duplicates
       const mergedMap = new Map();
       localList.forEach(item => {
         mergedMap.set(String(item.id || item.jobId), item);
@@ -53,8 +57,7 @@ export default function ApplicationsPage() {
         mergedMap.set(String(item.id || item.jobId), mappedApi);
       });
 
-      const finalApplications = Array.from(mergedMap.values());
-      setApplications(finalApplications);
+      setApplications(Array.from(mergedMap.values()));
       setIsLoading(false);
     }
     loadApplications();
@@ -109,93 +112,27 @@ export default function ApplicationsPage() {
               <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#463fe6] border-t-transparent"></div>
             </div>
           ) : applications.length === 0 ? (
-            <div className="rounded-2xl bg-white p-12 text-center shadow-xs border border-slate-200">
-              <Briefcase className="mx-auto h-12 w-12 text-slate-300" />
-              <h3 className="mt-4 text-base font-bold text-[#11121b]">No Applications Found</h3>
-              <p className="mt-1 text-xs text-slate-500">You have not applied to any job postings yet.</p>
-              <a href="/find-jobs" className="mt-4 inline-block rounded-xl bg-[#463fe6] px-5 py-2.5 text-xs font-bold text-white hover:bg-[#3831d0]">
-                Browse & Apply to Jobs
-              </a>
-            </div>
+            <ApplicationEmptyState />
           ) : (
             <div className="space-y-4">
               {applications.map((app) => (
-                <div key={app.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs hover:shadow-md transition">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="rounded-md bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 border border-emerald-100">
-                          {app.status || 'Submitted'}
-                        </span>
-                        <span className="text-xs text-slate-400 font-medium">• {app.location}</span>
-                      </div>
-                      <h3 className="text-base font-bold text-[#11121b]">{app.jobTitle || app.job?.title}</h3>
-                      <p className="text-xs font-semibold text-[#463fe6]">{app.companyName || app.job?.companyName}</p>
-                      <div className="flex items-center gap-4 text-[11px] text-slate-400 pt-1">
-                        <span className="flex items-center gap-1">
-                          <Calendar size={13} />
-                          Applied: {app.appliedDate || app.createdAt?.slice(0,10)}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Clock size={13} />
-                          Stage: {app.stageName || 'In Pipeline'}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 pt-2 sm:pt-0">
-                      <button
-                        onClick={() => handleViewTimeline(app.id)}
-                        className="rounded-xl border border-indigo-200 bg-indigo-50/60 px-4 py-2 text-xs font-bold text-[#463fe6] hover:bg-indigo-100"
-                      >
-                        View Timeline
-                      </button>
-
-                      {app.status !== 'Withdrawn' && app.status !== 'Rejected' && (
-                        <button
-                          onClick={() => handleWithdraw(app.id)}
-                          className="rounded-xl border border-rose-200 bg-rose-50/60 px-4 py-2 text-xs font-bold text-rose-600 hover:bg-rose-100"
-                        >
-                          Withdraw
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                <ApplicationCard
+                  key={app.id}
+                  app={app}
+                  onViewTimeline={handleViewTimeline}
+                  onWithdraw={handleWithdraw}
+                />
               ))}
             </div>
           )}
 
-          {/* Timeline Modal */}
-          {selectedTimeline && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-              <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                  <h3 className="text-lg font-bold text-[#11121b]">Application Status Timeline</h3>
-                  <button onClick={() => setSelectedTimeline(null)} className="text-slate-400 hover:text-black font-bold">✕</button>
-                </div>
-
-                <div className="space-y-4 pl-2 border-l-2 border-indigo-200 ml-2">
-                  {selectedTimeline.map((item, idx) => (
-                    <div key={idx} className="relative pl-5">
-                      <span className="absolute -left-[17px] top-0.5 h-3.5 w-3.5 rounded-full bg-[#463fe6] border-2 border-white ring-2 ring-indigo-100" />
-                      <h4 className="text-xs font-bold text-[#11121b]">{item.title || item.event}</h4>
-                      <p className="text-[11px] text-slate-400 font-semibold">{item.date || item.createdAt}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <button
-                  onClick={() => setSelectedTimeline(null)}
-                  className="w-full rounded-xl bg-[#463fe6] py-2.5 text-xs font-bold text-white hover:bg-[#3831d0]"
-                >
-                  Close Timeline
-                </button>
-              </div>
-            </div>
-          )}
+          <ApplicationTimelineModal 
+            timeline={selectedTimeline}
+            onClose={() => setSelectedTimeline(null)}
+          />
         </main>
       </div>
+
       <Footer />
     </div>
   );

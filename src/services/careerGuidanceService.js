@@ -1,265 +1,297 @@
 import { apiClient } from './apiClient';
 
-export const careerGuidanceService = {
-  /**
-   * Generate dynamic career guidance results based on user preferences
-   */
-  getCareerGuidanceResults: async (input) => {
-    const { interests, field, education, experience, additionalInfo } = input || {};
-    const interestStr = `${interests || ''} ${field || ''}`.toLowerCase();
+/**
+ * Live Google Gemini 3.5 Flash Lite AI Generator for Personalised Career Guidance Reports
+ * Generates role match, skill gap breakdown, learning roadmap, job postings, and market insights.
+ *
+ * @param {Object|string} inputPayload - User career input or object containing additionalInfo ("Any other information")
+ * @returns {Promise<Object>} Generated AI career guidance report JSON object
+ */
+const generateGeminiCareerGuidance = async (inputPayload) => {
+  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || 'AQ.Ab8RN6IcNHjqmAV9SvrEhOOgywq-V2g5Bt6Gy4PXPtbqoobT0A';
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`;
 
-    let roleData = {
-      topRole: "Data Scientist",
-      matchScore: 92,
-      description: "Data Scientists analyze complex data to help organizations make better decisions and build data-driven solutions.",
-      whyMatch: [
-        "Strong match with your skills in Python, SQL and data analysis",
-        "High demand in the job market with great growth potential",
-        "Aligns with your interest in Technology and Problem Solving",
-        "Average salary range: ₹10-₹22 LPA"
-      ],
-      secondaryRoles: [
-        { title: "AI Research Engineer", match: 88, salary: "₹14-₹26 LPA" },
-        { title: "Machine Learning Specialist", match: 85, salary: "₹12-₹20 LPA" }
-      ],
-      skills: {
-        mastered: ["Python", "SQL Querying", "Data Analysis", "Statistics"],
-        missing: [
-          { name: "PyTorch & Deep Learning", progress: 45 },
-          { name: "Cloud MLOps (AWS/GCP)", progress: 30 },
-          { name: "Distributed Data (Spark)", progress: 35 }
-        ]
-      },
-      roadmap: [
-        { num: 1, title: "Foundation", duration: "0-3 Months", desc: "Learn Python, Statistics, and SQL basics" },
-        { num: 2, title: "Core Skills", duration: "3-6 Months", desc: "Master Machine Learning, Feature Engineering" },
-        { num: 3, title: "Advanced Skills", duration: "6-12 Months", desc: "Deep Learning, PyTorch & MLOps Pipelines" },
-        { num: 4, title: "Build & Apply", duration: "12+ Months", desc: "Work on Production ML projects and apply for top roles" }
-      ],
-      jobRoles: [
-        { title: "Senior Data Scientist", company: "Google", location: "Bangalore, KA", salary: "₹18-28 LPA", tags: ["Python", "SQL", "MLOps"] },
-        { title: "AI Research Engineer", company: "Microsoft", location: "Remote", salary: "₹16-24 LPA", tags: ["PyTorch", "NLP", "Deep Learning"] },
-        { title: "ML Specialist", company: "Amazon", location: "Hyderabad, TS", salary: "₹15-22 LPA", tags: ["AWS Sagemaker", "Python", "Docker"] }
-      ],
-      insights: {
-        marketDemand: "High (+34% YoY Growth)",
-        hiringLocations: "Bangalore, Remote, Hyderabad, Gurgaon",
-        salaryRange: "₹8 LPA (Entry) to ₹35+ LPA (Lead/Principal)",
-        hiringSpeed: "Fast (Average 2-3 weeks time-to-hire)"
-      }
-    };
+  // Extract all user input parameters
+  const payloadObj = typeof inputPayload === 'object' ? inputPayload : { targetRole: inputPayload };
+  const { targetRole, interests, field, education, experience, additionalInfo, preferredLocation } = payloadObj;
 
-    if (interestStr.includes("technology") || interestStr.includes("computer science") || interestStr.includes("information technology")) {
-      roleData = {
-        topRole: "Full Stack Software Engineer",
-        matchScore: 95,
-        description: "Full Stack Engineers architect and build modern end-to-end web applications, scalable backend microservices, and cloud infrastructure.",
-        whyMatch: [
-          "Exceptional alignment with your expertise in JavaScript, React, Next.js & REST APIs",
-          "Top tier demand with highest interview callback rates in tech startups & MNCs",
-          "Matches your problem solving and software development interest",
-          "Average salary range: ₹12-₹26 LPA"
-        ],
-        secondaryRoles: [
-          { title: "Cloud Solutions Architect", match: 89, salary: "₹16-₹30 LPA" },
-          { title: "Backend Microservices Engineer", match: 86, salary: "₹12-₹22 LPA" }
-        ],
-        skills: {
-          mastered: ["React & Next.js", "JavaScript / TypeScript", "RESTful APIs", "HTML5 & Tailwind"],
-          missing: [
-            { name: "Docker & Containerization", progress: 40 },
-            { name: "System Design & Microservices", progress: 50 },
-            { name: "CI/CD & Cloud Infrastructure", progress: 45 }
-          ]
-        },
-        roadmap: [
-          { num: 1, title: "Modern Frontend", duration: "0-2 Months", desc: "Next.js App Router, SSR, Server Components & State Mgmt" },
-          { num: 2, title: "Scalable Backend", duration: "2-4 Months", desc: "Fastify / Node.js, PostgreSQL ORM, Redis & Auth" },
-          { num: 3, title: "DevOps & Cloud", duration: "4-8 Months", desc: "Docker, Kubernetes, AWS Deployment & Monitoring" },
-          { num: 4, title: "System Architecture", duration: "8+ Months", desc: "Distributed Systems, Caching & Capstone Application" }
-        ],
-        jobRoles: [
-          { title: "Senior Full Stack Engineer", company: "Google", location: "Bangalore, KA", salary: "₹18-30 LPA", tags: ["Next.js", "Node.js", "PostgreSQL"] },
-          { title: "React Developer", company: "Meta", location: "Remote", salary: "₹16-25 LPA", tags: ["React", "TypeScript", "GraphQL"] },
-          { title: "Backend Engineer", company: "Uber", location: "Gurgaon, HR", salary: "₹15-24 LPA", tags: ["Node.js", "Microservices", "Docker"] }
-        ],
-        insights: {
-          marketDemand: "Critical (+42% YoY Growth)",
-          hiringLocations: "Bangalore, Remote, Pune, Delhi NCR",
-          salaryRange: "₹7 LPA (Entry) to ₹40+ LPA (Lead/Staff)",
-          hiringSpeed: "Immediate (High priority hiring)"
-        }
-      };
-    } else if (interestStr.includes("design") || interestStr.includes("creative")) {
-      roleData = {
-        topRole: "Principal UI/UX Designer",
-        matchScore: 94,
-        description: "UI/UX Designers translate complex product requirements into beautiful, intuitive, and delightful user interfaces and experience design systems.",
-        whyMatch: [
-          "Strong background in user research, wireframing, and Figma prototyping",
-          "High market demand across SaaS, FinTech, and Consumer E-commerce apps",
-          "Aligns with your interest in Design, Creative Arts & User Experience",
-          "Average salary range: ₹9-₹20 LPA"
-        ],
-        secondaryRoles: [
-          { title: "Product Designer", match: 90, salary: "₹12-₹22 LPA" },
-          { title: "Design Systems Specialist", match: 87, salary: "₹10-₹18 LPA" }
-        ],
-        skills: {
-          mastered: ["Figma Prototyping", "UI Layout & Typography", "Wireframing", "User Research"],
-          missing: [
-            { name: "Design System Tokens", progress: 45 },
-            { name: "Usability Testing & Analytics", progress: 50 },
-            { name: "Interactive Micro-animations", progress: 40 }
-          ]
-        },
-        roadmap: [
-          { num: 1, title: "UX Foundations", duration: "0-2 Months", desc: "User Journey Mapping, Information Architecture & Heuristics" },
-          { num: 2, title: "Figma Mastery", duration: "2-4 Months", desc: "Auto-layout, Components, Variables & Interactive Prototypes" },
-          { num: 3, title: "Design Systems", duration: "4-7 Months", desc: "Color Tokens, Component Libraries & Accessibility Standards" },
-          { num: 4, title: "Portfolio Launch", duration: "7+ Months", desc: "Publish End-to-End SaaS Case Studies & Apply" }
-        ],
-        jobRoles: [
-          { title: "Senior UI/UX Designer", company: "Adobe", location: "Noida, UP", salary: "₹15-24 LPA", tags: ["Figma", "UI/UX", "Prototyping"] },
-          { title: "Product Designer", company: "Swiggy", location: "Bangalore, KA", salary: "₹14-22 LPA", tags: ["User Research", "Design Systems"] },
-          { title: "Visual UX Lead", company: "Canva", location: "Remote", salary: "₹12-18 LPA", tags: ["Figma", "Branding", "Micro-interactions"] }
-        ],
-        insights: {
-          marketDemand: "Steady (+28% YoY Growth)",
-          hiringLocations: "Bangalore, Remote, Mumbai, Delhi NCR",
-          salaryRange: "₹6 LPA (Entry) to ₹30+ LPA (Design Director)",
-          hiringSpeed: "Moderate (Portfolio review heavy)"
-        }
-      };
-    } else if (interestStr.includes("business") || interestStr.includes("finance")) {
-      roleData = {
-        topRole: "Technical Product Manager",
-        matchScore: 91,
-        description: "Product Managers bridge the gap between engineering, design, and business goals to define product roadmaps and ship high-impact features.",
-        whyMatch: [
-          "Great blend of business analytics, strategic planning & team leadership",
-          "Crucial leadership role with high visibility in high-growth companies",
-          "Matches your interest in Business, Strategy & Product Development",
-          "Average salary range: ₹14-₹28 LPA"
-        ],
-        secondaryRoles: [
-          { title: "Financial Analyst", match: 87, salary: "₹10-₹18 LPA" },
-          { title: "Growth Product Strategist", match: 84, salary: "₹12-₹22 LPA" }
-        ],
-        skills: {
-          mastered: ["Product Roadmapping", "Business Analytics", "Agile & Scrum", "Market Research"],
-          missing: [
-            { name: "SQL & Data Dashboarding", progress: 40 },
-            { name: "Financial Unit Economics", progress: 50 },
-            { name: "A/B Testing Strategy", progress: 45 }
-          ]
-        },
-        roadmap: [
-          { num: 1, title: "Product Fundamentals", duration: "0-2 Months", desc: "User Stories, PRDs, Roadmap Planning & Agile Methodologies" },
-          { num: 2, title: "Data & Metrics", duration: "2-4 Months", desc: "Funnel Analysis, SQL Queries, Mixpanel & Retention Metrics" },
-          { num: 3, title: "Go-To-Market", duration: "4-7 Months", desc: "Competitive Positioning, Pricing Strategy & User Acquisition" },
-          { num: 4, title: "Product Leadership", duration: "7+ Months", desc: "Lead Cross-functional squads and launch capstone product" }
-        ],
-        jobRoles: [
-          { title: "Technical Product Manager", company: "Flipkart", location: "Bangalore, KA", salary: "₹18-28 LPA", tags: ["Roadmapping", "Agile", "SQL"] },
-          { title: "Business Analyst", company: "Deloitte", location: "Gurgaon, HR", salary: "₹12-18 LPA", tags: ["Analytics", "Excel", "Strategy"] },
-          { title: "Growth PM", company: "Zomato", location: "Gurgaon, HR", salary: "₹15-24 LPA", tags: ["A/B Testing", "Mixpanel", "Growth"] }
-        ],
-        insights: {
-          marketDemand: "High (+31% YoY Growth)",
-          hiringLocations: "Bangalore, Gurgaon, Mumbai, Remote",
-          salaryRange: "₹8 LPA (Entry) to ₹38+ LPA (VP Product)",
-          hiringSpeed: "Standard (Case study & interview rounds)"
-        }
-      };
-    }
+  const userFocus = additionalInfo?.trim();
+  const primaryContext = userFocus || targetRole || interests || field || 'Full Stack Software Engineer';
 
-    try {
-      const res = await apiClient('/career-guidance/generate-roadmap', {
-        method: 'POST',
-        body: JSON.stringify(input || {}),
-      });
-      if (res?.data) {
-        return { success: true, data: { ...roleData, ...res.data } };
-      }
-    } catch (err) {
-      console.warn('API guidance fetch notice (using dynamic local response):', err);
-    }
-    return { success: true, data: roleData };
+  let fullUserPrompt = `Candidate Primary Target / Specific Focus: "${primaryContext}"`;
+  if (userFocus) {
+    fullUserPrompt += `\nUSER SPECIFIC REQUIREMENT / ADDITIONAL INFORMATION ("Any other information"): "${userFocus}"`;
+  }
+  if (targetRole && targetRole !== userFocus) fullUserPrompt += `\nTarget Role Context: "${targetRole}"`;
+  if (interests) fullUserPrompt += `\nMain Interests: "${interests}"`;
+  if (field) fullUserPrompt += `\nField/Industry: "${field}"`;
+  if (education) fullUserPrompt += `\nEducation Level: "${education}"`;
+  if (experience) fullUserPrompt += `\nYears of Experience: "${experience}"`;
+  if (preferredLocation) fullUserPrompt += `\nPreferred Location: "${preferredLocation}"`;
+
+  const prompt = `You are HireMind's elite AI Career Guidance Engine. Generate a comprehensive, highly personalized career report for the candidate based on these exact details:
+${fullUserPrompt}
+
+STRICT MANDATE:
+1. If the candidate provided text in "USER SPECIFIC REQUIREMENT / ADDITIONAL INFORMATION" (such as "${userFocus}"), your generated "topRole", "description", "whyMatch", "skills", "roadmap", "jobRoles", and "insights" MUST BE 100% SPECIFICALLY TAILORED TO "${userFocus}".
+2. For example, if the input is "editing apps", topRole MUST BE "Video & Photo Editing App Developer" or "Mobile Multimedia Engineer" or similar. DO NOT output generic default roles like "Business & Finance" or generic web dev if the user specifically asked about "${userFocus}".
+3. Ensure all 4 whyMatch points explain why "${userFocus}" is a great career match given their experience level (${experience || '1-3 Years'}) and education (${education || "Bachelor's Degree"}).
+
+Return ONLY a valid JSON object matching this exact JSON schema:
+{
+  "topRole": "Specific Role Title based on user focus/input",
+  "matchScore": 95,
+  "description": "2-3 sentence overview of this specialized role and why it matches the user's specific input.",
+  "whyMatch": [
+    "Reason 1 tailored specifically to candidate input and goals",
+    "Reason 2 regarding industry demand & skill alignment",
+    "Reason 3 regarding core technical capabilities needed",
+    "Reason 4 regarding salary & career growth potential"
+  ],
+  "secondaryRoles": [
+    { "title": "Related Specialized Role 1", "match": 90, "salary": "₹14 - ₹26 LPA" },
+    { "title": "Related Specialized Role 2", "match": 85, "salary": "₹12 - ₹22 LPA" }
+  ],
+  "skills": {
+    "mastered": ["Relevant Skill 1", "Relevant Skill 2", "Relevant Skill 3", "Relevant Skill 4"],
+    "missing": [
+      { "name": "Priority Skill Gap 1", "progress": 40, "priority": "High" },
+      { "name": "Priority Skill Gap 2", "progress": 55, "priority": "High" },
+      { "name": "Priority Skill Gap 3", "progress": 45, "priority": "Medium" }
+    ]
   },
+  "roadmap": [
+    { "num": 1, "title": "Phase 1: Foundations", "duration": "0-2 Months", "desc": "Core skills to master first" },
+    { "num": 2, "title": "Phase 2: Core Engineering", "duration": "2-4 Months", "desc": "Practical building & frameworks" },
+    { "num": 3, "title": "Phase 3: Advanced & Cloud", "duration": "4-6 Months", "desc": "Production architecture & DevOps" },
+    { "num": 4, "title": "Phase 4: Capstone & Portfolio", "duration": "6+ Months", "desc": "Real-world app launch & job hunt" }
+  ],
+  "jobRoles": [
+    { "title": "Senior Specialized Role", "company": "Top Tech Company", "location": "Bangalore / Remote", "salary": "₹18-30 LPA", "tags": ["Tag1", "Tag2", "Tag3"] },
+    { "title": "Specialized Engineer", "company": "High-Growth Startup", "location": "Remote", "salary": "₹15-25 LPA", "tags": ["Tag1", "Tag2"] }
+  ],
+  "insights": {
+    "marketDemand": "Dynamic AI market growth trend e.g. High (+42% YoY Growth)",
+    "hiringLocations": "Top hiring hubs e.g. Bangalore, Remote, Gurgaon, Pune",
+    "salaryRange": "Realistic salary benchmark e.g. ₹8 LPA (Entry) to ₹38+ LPA (Lead/Staff)",
+    "hiringSpeed": "Recruitment speed e.g. Fast (Immediate hiring priority)"
+  }
+}`;
 
-  /**
-   * Generate AI Personalized Learning Roadmap
-   * POST /api/v1/career-guidance/generate-roadmap
-   */
-  generateRoadmap: async ({ targetRole, currentSkills, experienceLevel }) => {
-    try {
-      const res = await apiClient('/career-guidance/generate-roadmap', {
-        method: 'POST',
-        body: JSON.stringify({ targetRole, currentSkills, experienceLevel }),
-      });
-      return res;
-    } catch (err) {
-      console.warn('API career-guidance roadmap notice (local fallback):', err);
-      return {
-        success: true,
-        data: {
-          targetRole: targetRole || 'Full Stack Engineer',
-          estimatedDuration: '8 Weeks',
-          milestones: [
-            {
-              step: 1,
-              title: 'Advanced JavaScript & Async Architecture',
-              duration: '2 Weeks',
-              topics: ['Event Loop', 'Promises & Async/Await', 'Memory Management', 'Web Workers'],
-            },
-            {
-              step: 2,
-              title: 'React 19 & Next.js App Router Masterclass',
-              duration: '3 Weeks',
-              topics: ['Server Components', 'Server Actions', 'SSR & ISR', 'State Management'],
-            },
-            {
-              step: 3,
-              title: 'Microservices & Cloud Backend Infrastructure',
-              duration: '3 Weeks',
-              topics: ['Fastify / Node.js', 'PostgreSQL & Drizzle ORM', 'Docker Containers', 'Redis Caching'],
-            },
-          ],
-        },
-      };
+  const body = {
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: {
+      temperature: 0.7,
+      responseMimeType: 'application/json'
     }
-  },
+  };
 
-  /**
-   * Generate AI Customized Course
-   * POST /api/v1/career-guidance/generate-course
-   */
-  generateCourse: async ({ topic, level }) => {
-    try {
-      const res = await apiClient('/career-guidance/generate-course', {
-        method: 'POST',
-        body: JSON.stringify({ topic, level }),
-      });
-      return res;
-    } catch (err) {
-      console.warn('API career-guidance course notice (local fallback):', err);
-      return {
-        success: true,
-        data: {
-          title: `Mastering ${topic || 'Modern Web Development'}`,
-          level: level || 'Intermediate',
-          modulesCount: 6,
-          duration: '14 Hours',
-          modules: [
-            { title: 'Core Foundations & Principles', duration: '2.5 hrs' },
-            { title: 'Practical Hands-on Building', duration: '4 hrs' },
-            { title: 'Production Deployment & Optimization', duration: '3.5 hrs' },
-            { title: 'Capstone Project Evaluation', duration: '4 hrs' },
-          ],
-        },
-      };
-    }
-  },
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+
+  const json = await response.json();
+  if (!response.ok || json.error) {
+    throw new Error(json.error?.message || `Gemini API HTTP ${response.status}`);
+  }
+
+  const rawText = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const parsed = JSON.parse(rawText);
+
+  // Normalize insights strings/arrays
+  if (parsed.insights && Array.isArray(parsed.insights.hiringLocations)) {
+    parsed.insights.hiringLocations = parsed.insights.hiringLocations.join(', ');
+  }
+  if (parsed.insights && typeof parsed.insights.salaryRange === 'object') {
+    const sr = parsed.insights.salaryRange;
+    parsed.insights.salaryRange = `${sr.entryLevel || '₹8 LPA'} to ${sr.seniorLevel || '₹35+ LPA'}`;
+  }
+
+  return parsed;
 };
 
+/**
+ * AI Career Guidance Service API Bridge
+ */
+export const careerGuidanceService = {
+  /**
+   * Generate complete personalized AI career guidance report.
+   * @param {Object} [payload={}] Candidate input object
+   * @returns {Promise<Object>} Response object containing AI report data
+   */
+  getCareerGuidanceReport: async (payload = {}) => {
+    try {
+      const aiData = await generateGeminiCareerGuidance(payload);
+      return {
+        success: true,
+        data: aiData
+      };
+    } catch (geminiError) {
+      console.warn('Direct Gemini API call error, falling back to backend:', geminiError.message);
+      try {
+        const response = await apiClient('/career-guidance', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        });
+        if (response?.success && response?.data) {
+          return response;
+        }
+      } catch (backendErr) {
+        console.error('Backend fallback also failed:', backendErr);
+      }
+      return {
+        success: false,
+        message: 'Failed to generate AI guidance. Please try again.'
+      };
+    }
+  },
+
+  getCareerGuidanceResults: async (input = {}) => {
+    return careerGuidanceService.getCareerGuidanceReport(input);
+  },
+
+  /**
+   * Fetch AI Skill Gap Analysis for target career.
+   * @param {Object} [payload={}]
+   * @returns {Promise<Object>} Mastered vs missing skills breakdown
+   */
+  getSkillAnalysis: async (payload = {}) => {
+    try {
+      const fullAiData = await generateGeminiCareerGuidance(payload);
+      return {
+        success: true,
+        data: {
+          targetRole: fullAiData.topRole || 'Specialized Engineer',
+          masteredSkills: fullAiData.skills?.mastered || ["Core Languages", "Frameworks"],
+          missingSkills: fullAiData.skills?.missing || [
+            { name: "Advanced Architecture", priority: "High", progress: 40 },
+            { name: "Cloud MLOps / DevOps", priority: "High", progress: 50 }
+          ]
+        }
+      };
+    } catch (error) {
+      console.warn('Direct Gemini AI skill analysis failed, trying backend:', error.message);
+      try {
+        const response = await apiClient('/career-guidance/skills', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        });
+        if (response?.success && response?.data) {
+          return response;
+        }
+      } catch (e) {
+        return { success: false, message: e.message };
+      }
+    }
+  },
+
+  /**
+   * Fetch 4-phase AI learning roadmap.
+   * @param {Object} [payload={}]
+   * @returns {Promise<Object>} Learning roadmap phases
+   */
+  getLearningRoadmap: async (payload = {}) => {
+    try {
+      const fullAiData = await generateGeminiCareerGuidance(payload);
+      return {
+        success: true,
+        data: {
+          targetRole: fullAiData.topRole || 'Specialized Engineer',
+          estimatedDuration: "6 Months",
+          milestones: fullAiData.roadmap || []
+        }
+      };
+    } catch (error) {
+      console.warn('Direct Gemini AI roadmap failed, trying backend:', error.message);
+      try {
+        const response = await apiClient('/career-guidance/roadmap', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        });
+        if (response?.success && response?.data) {
+          return response;
+        }
+      } catch (e) {
+        return { success: false, message: e.message };
+      }
+    }
+  },
+
+  /**
+   * Fetch AI market insights (salary range, demand growth, top hiring locations).
+   * @param {Object} [payload={}]
+   * @returns {Promise<Object>} Market insights data
+   */
+  getMarketInsights: async (payload = {}) => {
+    try {
+      const fullAiData = await generateGeminiCareerGuidance(payload);
+      return {
+        success: true,
+        data: fullAiData.insights || {
+          marketDemand: "High (+35% YoY Growth)",
+          salaryRange: "₹8 - ₹30 LPA",
+          hiringLocations: "Bangalore, Remote, Gurgaon",
+          hiringSpeed: "Fast"
+        }
+      };
+    } catch (error) {
+      console.warn('Direct Gemini AI market insights failed, trying backend:', error.message);
+      try {
+        const response = await apiClient('/career-guidance/insights', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        });
+        if (response?.success && response?.data) {
+          return response;
+        }
+      } catch (e) {
+        return { success: false, message: e.message };
+      }
+    }
+  },
+
+  /**
+   * Generate recommended learning courses matching candidate skill gaps.
+   * @param {string} [gaps='editing apps'] Candidate target skill gap
+   * @param {number} [limit=6] Number of courses
+   * @returns {Promise<Object>} Recommended courses array
+   */
+  getRecommendedCourses: async (gaps = 'editing apps', limit = 6) => {
+    try {
+      const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || 'AQ.Ab8RN6IcNHjqmAV9SvrEhOOgywq-V2g5Bt6Gy4PXPtbqoobT0A';
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`;
+      const prompt = `You are HireMind's AI course recommendation system. Generate ${limit} highly specific course recommendations tailored to the candidate's focus/skill gap: "${gaps}".
+Return ONLY a valid JSON array of course objects with this exact structure:
+[
+  { "id": 1, "title": "Detailed Course Title Specifically for ${gaps}", "provider": "Udemy", "level": "Intermediate", "rating": 4.8, "duration": "14 Hours", "link": "#" }
+]`;
+      const body = {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.7, responseMimeType: 'application/json' }
+      };
+      const resp = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const json = await resp.json();
+      if (resp.ok && json.candidates?.[0]?.content?.parts?.[0]?.text) {
+        const courses = JSON.parse(json.candidates[0].content.parts[0].text);
+        return { success: true, data: { courses } };
+      }
+    } catch (e) {
+      console.warn('Gemini AI course generation notice:', e.message);
+    }
+    return {
+      success: true,
+      data: {
+        courses: [
+          { id: 1, title: `Complete ${gaps} Masterclass 2026`, provider: 'Udemy', level: 'Intermediate', rating: 4.8, duration: '12 Hours', link: '#' },
+          { id: 2, title: `Advanced ${gaps} Architecture & Production`, provider: 'Coursera', level: 'Advanced', rating: 4.9, duration: '18 Hours', link: '#' },
+          { id: 3, title: `Professional ${gaps} Engineering Bootcamp`, provider: 'Frontend Masters', level: 'Intermediate', rating: 4.9, duration: '14 Hours', link: '#' }
+        ]
+      }
+    };
+  },
+
+  generateRoadmap: async ({ targetRole }) => careerGuidanceService.getLearningRoadmap({ targetRole }),
+  generateCourse: async ({ topic }) => careerGuidanceService.getRecommendedCourses(topic, 3),
+};

@@ -130,8 +130,8 @@ export default function JobDetailPage() {
 
     function formatJobData(j) {
       const formattedSalary = (j.minSalary && j.maxSalary)
-        ? `$${(j.minSalary / 1000).toFixed(0)}k - $${(j.maxSalary / 1000).toFixed(0)}k`
-        : j.salary || (j.minSalary ? `$${(j.minSalary / 1000).toFixed(0)}k+` : "Competitive Salary");
+        ? `₹${(j.minSalary / 1000).toFixed(0)}k - ₹${(j.maxSalary / 1000).toFixed(0)}k`
+        : j.salary || (j.minSalary ? `₹${(j.minSalary / 1000).toFixed(0)}k+` : "Competitive Salary");
 
       const expStr = j.minExperienceMonths
         ? `${(j.minExperienceMonths / 12).toFixed(0)}-${(j.maxExperienceMonths ? j.maxExperienceMonths / 12 : j.minExperienceMonths / 12 + 2).toFixed(0)} Yrs`
@@ -647,7 +647,7 @@ export default function JobDetailPage() {
                 <h3 className="text-base font-bold text-[#11121d]">About the Company</h3>
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 p-1.5 flex items-center justify-center shrink-0">
-                    <img src={job?.logo} alt={job?.company} className="w-full h-full object-contain" />
+                    <img src={job?.logo || "/logo/google.png"} alt={job?.company} className="w-full h-full object-contain" />
                   </div>
                   <div>
                     <h4 className="text-sm font-bold text-[#11121d] flex items-center gap-1">
@@ -659,31 +659,35 @@ export default function JobDetailPage() {
                 </div>
 
                 <p className="text-xs text-slate-600 leading-relaxed font-normal">
-                  {job?.company} is a leading technology organization specializing in internet services, software products, and AI innovations.
+                  {job?.organization?.about || `${job?.company} is a leading technology organization specializing in internet services, software products, and AI innovations.`}
                 </p>
 
                 <div className="space-y-2 text-xs font-semibold text-slate-600 border-t border-slate-100 pt-3">
                   <div className="flex items-center justify-between">
                     <span className="text-slate-400">Company Size</span>
-                    <span className="font-bold text-[#11121d]">10,000+ Employees</span>
+                    <span className="font-bold text-[#11121d]">{job?.organization?.companySize || '500-1000 Employees'}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-slate-400">Industry</span>
-                    <span className="font-bold text-[#11121d]">Internet Services</span>
+                    <span className="font-bold text-[#11121d]">{job?.organization?.industry || 'Software & Technology'}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Founded</span>
-                    <span className="font-bold text-[#11121d]">1998</span>
+                    <span className="text-slate-400">Location</span>
+                    <span className="font-bold text-[#11121d]">{job?.organization?.city || job?.location || 'Bangalore, India'}</span>
                   </div>
                 </div>
 
-                <button 
-                  onClick={() => alert(`Visiting ${job?.company} official career page...`)}
-                  className="text-xs font-bold text-[#463fe6] hover:underline flex items-center gap-1 pt-1"
-                >
-                  <span>View Website</span>
-                  <ExternalLink size={12} />
-                </button>
+                {job?.organization?.website && (
+                  <a 
+                    href={job.organization.website.startsWith('http') ? job.organization.website : `https://${job.organization.website}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-bold text-[#463fe6] hover:underline flex items-center gap-1 pt-1"
+                  >
+                    <span>View Official Website</span>
+                    <ExternalLink size={12} />
+                  </a>
+                )}
               </div>
 
             </aside>

@@ -20,7 +20,8 @@ export default function SkillAssessmentReview({
   setReviewPage,
   itemsPerReviewPage,
   setCurrentStep,
-  handleFinishTest
+  handleFinishTest,
+  isLoading
 }) {
   const totalPages = Math.ceil(mockQuestions.length / itemsPerReviewPage);
   const currentQuestions = mockQuestions.slice(
@@ -136,10 +137,11 @@ export default function SkillAssessmentReview({
           </div>
 
           <button 
+            disabled={isLoading}
             onClick={handleFinishTest}
-            className="bg-[#2D24D0] hover:bg-[#1f1a8c] text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-sm cursor-pointer"
+            className="bg-[#2D24D0] hover:bg-[#1f1a8c] text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-sm cursor-pointer disabled:opacity-60 flex items-center gap-1.5"
           >
-            Submit Test Now
+            {isLoading ? "Evaluating Answers with AI..." : "Submit Test Now"}
           </button>
         </div>
       </div>
